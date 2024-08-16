@@ -8,6 +8,8 @@ val fontLight = Color(0xFFFFFFFF)
 val fontMedium = Color(0xFFC69AFF)
 val fontDark = Color(0xFF742BEB)
 
+val yellowLight = Color(0xFFFFF7DE)
+
 val backgroundLight = Color(0xFFF2E8FF)
 val backgroundDark = Color(0xFFDBBFFF)
 

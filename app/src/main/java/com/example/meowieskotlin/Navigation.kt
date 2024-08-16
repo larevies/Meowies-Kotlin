@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun Navigation(){/*
+fun Navigation(){
     val navController = rememberNavController()
-    */
+
 }
