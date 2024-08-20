@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    SignUp(navController = rememberNavController())
+                    Navigation()
                 }
             }
         }

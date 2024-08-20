@@ -1,5 +1,6 @@
 package com.example.meowieskotlin
 
+import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +62,7 @@ fun SignIn(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,15 +76,54 @@ fun SignIn(navController: NavController) {
                         ),
                 )
         ) {
+            Box {
+                Button(
+                    onClick = {
+                        navController.navigate(Routes.WelcomeScreen.route)
+                    },
+                    contentPadding = PaddingValues(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    modifier = Modifier.offset(x = 10.dp, y = 25.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.back),
+                        contentDescription = "Go back",
+                        Modifier.size(40.dp)
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 30.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Top
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.paw),
+                    contentDescription = "Meowies",
+                    modifier = Modifier.height(40.dp)
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(
+                    text = "Meowies",
+                    modifier = Modifier.padding(top = 5.dp),
+                    style = TextStyle(
+                        fontLight,
+                        fontSize = 30.sp
+                    )
+                )
+            }
             Column (
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 30.dp, vertical = 10.dp),
+                    .padding(horizontal = 30.dp, vertical = 30.dp),
                 verticalArrangement = Arrangement.Center
             )
-            //.background(Color.Cyan)) // TODO
             {
-                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Happy to see you again!",
                     modifier = Modifier
@@ -94,7 +136,7 @@ fun SignIn(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.padding(15.dp))
                 Text(
-                    text = "Please, fill in the following",
+                    text = "Please, fill in the following:",
                     modifier = Modifier
                         .fillMaxWidth(),
                     color = Color.White,
@@ -181,66 +223,30 @@ fun SignIn(navController: NavController) {
                 val user = remember{
                     mutableStateOf("")
                 }
-                Row (
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
+
+                Button(
+                    onClick = {
+                        /*TODO*/
+                    },
+                    contentPadding = PaddingValues(),
+                    border = BorderStroke(2.dp, Color.White),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = fontMedium
+                    )
                 ) {
-                    Button(
-                        onClick = {
-                            /*TODO*/
-                        },
+                    Box(
                         modifier = Modifier
-                            .weight(1f),
-                        contentPadding = PaddingValues(),
-                        border = BorderStroke(2.dp, Color.White),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        )
+                            .heightIn(50.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .heightIn(50.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Go back",
-                                color = fontMedium,
-                                style = TextStyle(
-                                    fontSize = 18.sp
-                                )
+                        Text(
+                            text = "Log in",
+                            color = fontLight,
+                            style = TextStyle(
+                                fontSize = 18.sp
                             )
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Button(
-                        onClick = {
-                            /*TODO*/
-                        },
-                        modifier = Modifier
-                            .weight(1f),
-                        contentPadding = PaddingValues(),
-                        border = BorderStroke(2.dp, Color.White),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = fontMedium
                         )
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .heightIn(50.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = "Log in",
-                                color = fontLight,
-                                style = TextStyle(
-                                    fontSize = 18.sp
-                                )
-                            )
-                        }
                     }
                 }
             }
