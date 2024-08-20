@@ -38,12 +38,15 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun Welcome(navController: NavController){
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(color = fontMedium)
     Surface(
         color = backgroundColor,
         modifier = Modifier

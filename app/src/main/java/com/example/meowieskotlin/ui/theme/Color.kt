@@ -7,6 +7,7 @@ val backgroundColor = Color(0xFFDDC5FF)
 val fontLight = Color(0xFFFFFFFF)
 val fontMedium = Color(0xFFC69AFF)
 val fontDark = Color(0xFF742BEB)
+val fontUltraDark = Color(0xFF3c1280)
 
 val fontMistake = Color(0xFF850035)
 

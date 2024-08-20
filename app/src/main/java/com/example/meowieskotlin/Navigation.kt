@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 
 @Composable
 fun Navigation(){
@@ -19,7 +18,7 @@ fun Navigation(){
         }
         composable(route = Routes.SignUp.route)
         {
-            Slide(navController = navController)
+            SignUp(navController = navController)
         }
     }
 }
