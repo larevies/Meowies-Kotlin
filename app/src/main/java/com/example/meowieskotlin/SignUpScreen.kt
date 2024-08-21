@@ -3,6 +3,7 @@
 package com.example.meowieskotlin
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,16 +60,21 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(navController: NavController) {
+
     Surface (
         modifier = Modifier.fillMaxSize()
     ) {
+
+
 
         var email = remember {
             mutableStateOf("")
@@ -120,6 +128,12 @@ fun SignUp(navController: NavController) {
                         ),
                 )
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.background_meowies),
+                contentDescription = "Meowies Background",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
             goBackButton(navController, Routes.WelcomeScreen.route, R.drawable.back, "go back")
             logo()
 
@@ -165,13 +179,28 @@ fun SignUp(navController: NavController) {
                         2 -> ScreenThree(selectedDate, datePickerState, showDatePicker)
                     }
                 }
+                var text = remember {
+                    mutableStateOf("Next")
+                }
                 button(onClick = {
                     if (selectedTab.value < 2) {
                         selectedTab.value++
                     } else {
                         /*TODO*/
+                        try {
+                            var success = postRequestAsync()
+                            runBlocking {
+                                if (success.await()) {
+                                    text.value = "Success!"
+                                } else {
+                                    text.value = "This email ia already taken!"
+                                }
+                            }
+                        } catch (e: Exception) {
+                            print(e.message)
+                        }
                     }
-                }, text = "Next")
+                }, text = text.value)
                 Spacer(modifier = Modifier.weight(4f))
             }
         }
@@ -199,7 +228,6 @@ fun ScreenOne(email: MutableState<String>) {
             message.value = ""
         }
     }
-
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

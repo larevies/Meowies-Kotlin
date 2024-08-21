@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 android {
@@ -50,6 +51,7 @@ android {
 }
 
 dependencies {
+
     implementation("androidx.compose.material3:material3:1.0.0-alpha04")
     implementation ("androidx.compose.material3:material3:1.2.1")
     implementation ("androidx.compose.material3:material3-window-size-class:1.2.1")
@@ -73,4 +75,16 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("io.ktor:ktor-client-core:2.3.12")
+    implementation("io.ktor:ktor-client-cio:2.3.12")
+    implementation("io.ktor:ktor-client-json:2.3.12")
+    implementation("io.ktor:ktor-client-serialization:2.3.12")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+
+    implementation("io.ktor:ktor-client-android:2.3.12")
+    implementation("io.ktor:ktor-client-websockets:2.3.12")
+
 }
