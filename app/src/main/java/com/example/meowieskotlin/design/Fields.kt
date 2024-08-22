@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.meowieskotlin.R
@@ -47,7 +48,8 @@ fun textField(text: String, size: Int, color: Color) {
         modifier = Modifier.fillMaxWidth(),
         style = TextStyle(
             color,
-            fontSize = size.sp
+            fontSize = size.sp,
+            textAlign = TextAlign.Center
         )
     )
 }
@@ -62,7 +64,7 @@ fun textFieldOneIcon(text: String, value: MutableState<String>, hint: String, fo
             fontSize = 23.sp
         )
     )
-    Spacer(modifier = Modifier.padding(15.dp))
+    Spacer(modifier = Modifier.padding(10.dp))
     styledTextField(value = value, hint = hint, focusManager = focusManager, image = image, keyboardType = keyboardType)
 }
 

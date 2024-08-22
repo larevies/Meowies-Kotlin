@@ -11,6 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import com.example.meowieskotlin.ui.theme.fontUltraDark
 
+
 var agreement = """I (hereinafter referred to as the “Personal Data Subject”), being legally capable, freely, voluntarily, and for my own benefit, to the satisfaction of Federal Law № 152-FZ "On Personal Data" dated July 27, 2006 (hereinafter referred to as the “Law On Personal Data”), hereby provide this Consent Form for processing personal data (hereinafter referred to as the “Consent Form”) to the "I don't know what to write here.".
 
        The provision and confirmation of the Consent Form in question imply checking the appropriate box and clicking the “Submit” button when registering on the official app of the "Meowies" app owned by the Operator, i.e. submitting an online application form to participate in the Meowies.

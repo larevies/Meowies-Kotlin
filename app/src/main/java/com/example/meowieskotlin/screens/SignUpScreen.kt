@@ -1,9 +1,8 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.example.meowieskotlin
+package com.example.meowieskotlin.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,9 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.meowieskotlin.R
+import com.example.meowieskotlin.design.background
 import com.example.meowieskotlin.design.button
 import com.example.meowieskotlin.design.dateField
 import com.example.meowieskotlin.design.errorMessage
@@ -56,6 +55,8 @@ import com.example.meowieskotlin.design.styledDatePicker
 import com.example.meowieskotlin.design.textField
 import com.example.meowieskotlin.design.textFieldOneIcon
 import com.example.meowieskotlin.design.userAgreement
+import com.example.meowieskotlin.navigation.Routes
+import com.example.meowieskotlin.requests.registerAsync
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
@@ -66,6 +67,8 @@ import java.util.Date
 import java.util.Locale
 
 
+const val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$"
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(navController: NavController) {
@@ -74,9 +77,11 @@ fun SignUp(navController: NavController) {
         modifier = Modifier.fillMaxSize()
     ) {
 
+        val email = remember {
+            mutableStateOf("")
+        }
 
-
-        var email = remember {
+        val name = remember {
             mutableStateOf("")
         }
 
@@ -88,7 +93,7 @@ fun SignUp(navController: NavController) {
             mutableStateOf("")
         }
 
-        var showDatePicker = remember {
+        val showDatePicker = remember {
             mutableStateOf(false)
         }
 
@@ -103,8 +108,44 @@ fun SignUp(navController: NavController) {
             initialPage = 0
         )
 
-        var selectedTab = remember {
+        val selectedTab = remember {
             mutableIntStateOf(pagerState.currentPage)
+        }
+
+        val checked = remember {
+            mutableStateOf(false)
+        }
+
+        val isEmailValid = remember {
+            mutableStateOf(false)
+        }
+
+        val isPasswordValid = remember {
+            mutableStateOf(false)
+        }
+
+        val message = remember {
+            mutableStateOf("")
+        }
+
+        val errorMessage = remember {
+            mutableStateOf("")
+        }
+
+        LaunchedEffect(password.value) {
+            isPasswordValid.value = password.value != ""
+        }
+
+        LaunchedEffect(email.value) {
+            if (email.value != "" &&
+                !email.value.matches(emailRegex.toRegex())
+            ) {
+                message.value = "Doesn't look like an e-mail"
+                isEmailValid.value = false
+            } else {
+                message.value = ""
+                isEmailValid.value = true
+            }
         }
 
         LaunchedEffect(selectedTab.value) {
@@ -128,20 +169,17 @@ fun SignUp(navController: NavController) {
                         ),
                 )
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.background_meowies),
-                contentDescription = "Meowies Background",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-            goBackButton(navController, Routes.WelcomeScreen.route, R.drawable.back, "go back")
+            background()
+            goBackButton(navController = navController, route = Routes.Welcome.route,
+                text = "Go back", 40.dp)
             logo()
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(30.dp),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Spacer(modifier = Modifier.padding(30.dp))
@@ -174,52 +212,63 @@ fun SignUp(navController: NavController) {
                     modifier = Modifier.weight(9f),
                 ) { currentPage ->
                     when (currentPage) {
-                        0 -> ScreenOne(email)
+                        0 -> ScreenOne(name, email, message)
                         1 -> ScreenTwo(password, passwordRepeated)
-                        2 -> ScreenThree(selectedDate, datePickerState, showDatePicker)
+                        2 -> ScreenThree(selectedDate, datePickerState, showDatePicker, checked)
                     }
                 }
-                var text = remember {
+                val text = remember {
                     mutableStateOf("Next")
                 }
                 button(onClick = {
                     if (selectedTab.value < 2) {
                         selectedTab.value++
                     } else {
-                        /*TODO*/
-                        try {
-                            var success = postRequestAsync()
-                            runBlocking {
-                                if (success.await()) {
-                                    text.value = "Success!"
-                                } else {
-                                    text.value = "This email ia already taken!"
+                        if (!isEmailValid.value) {
+                            errorMessage.value = "E-mail is invalid"
+                        } else if (!isPasswordValid.value) {
+                            errorMessage.value = "Passwords do not match"
+                        } else if (!checked.value) {
+                            errorMessage.value = "To continue you have to agree " +
+                                    "to the user agreement"
+                        } else {
+                            try {
+                                val success = registerAsync(
+                                    name.value, email.value,
+                                    password.value, selectedDate
+                                )
+                                runBlocking {
+                                    if (success.await()) {
+                                        text.value = "Redirecting"
+                                        navController.navigate(Routes.SignIn.route)
+                                    } else {
+                                        errorMessage.value = "This email is already taken!"
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                print(e.message)
                             }
-                        } catch (e: Exception) {
-                            print(e.message)
                         }
                     }
-                }, text = text.value)
-                Spacer(modifier = Modifier.weight(4f))
+                }, text = text.value, background = fontMedium)
+                errorMessage(
+                    message = errorMessage
+                )
+                Spacer(modifier = Modifier.weight(3f))
             }
         }
     }
 }
 
-
 @Composable
-fun ScreenOne(email: MutableState<String>) {
+fun ScreenOne(name: MutableState<String>, email: MutableState<String>,
+              message: MutableState<String>) {
 
     val focusManager = LocalFocusManager.current
     
-    var message = remember {
-        mutableStateOf("")
-    }
 
-    val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$"
 
-    LaunchedEffect(email.value) {
+    /*LaunchedEffect(email.value) {
         if (email.value != "" &&
             !email.value.matches(emailRegex.toRegex())
             ) {
@@ -227,12 +276,21 @@ fun ScreenOne(email: MutableState<String>) {
         } else {
             message.value = ""
         }
-    }
+    }*/
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
+        textFieldOneIcon(
+            text = "What's your name?",
+            value = name,
+            hint = "Name",
+            focusManager = focusManager,
+            image = R.drawable.id,
+            KeyboardType.Text
+        )
+        Spacer(modifier = Modifier.padding(20.dp))
         textFieldOneIcon(
             text = "Please, enter your e-mail:",
             value = email,
@@ -251,7 +309,7 @@ fun ScreenTwo(password: MutableState<String>,
 
     val focusManager = LocalFocusManager.current
 
-    var message = remember {
+    val message = remember {
         mutableStateOf("")
     }
 
@@ -315,11 +373,9 @@ fun ScreenTwo(password: MutableState<String>,
 @Composable
 fun ScreenThree(selectedDate: String,
                 datePickerState: DatePickerState,
-                showDatePicker: MutableState<Boolean>) {
-
-    var checked = remember {
-        mutableStateOf(false)
-    }
+                showDatePicker: MutableState<Boolean>,
+                checked: MutableState<Boolean>) {
+    
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,

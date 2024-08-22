@@ -42,3 +42,13 @@ data class User(
     val birthday: String,
     val profilePicture: Int
 )
+
+@Serializable
+data class UserNoPassword(
+    val id: Int? = null,
+    val name: String,
+    val email: String,
+    val birthday: String,
+    val profilePicture: Int
+
+)

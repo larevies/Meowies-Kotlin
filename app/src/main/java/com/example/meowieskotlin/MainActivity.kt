@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.example.meowieskotlin.navigation.Navigation
 import com.example.meowieskotlin.ui.theme.MeowiesKotlinTheme
 
 class MainActivity : ComponentActivity() {

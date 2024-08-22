@@ -1,11 +1,14 @@
 package com.example.meowieskotlin.design
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.DatePicker
@@ -24,6 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
@@ -122,6 +127,58 @@ fun styledTextField(value: MutableState<String>, hint: String, focusManager: Foc
                 contentDescription = hint,
                 modifier = Modifier.height(20.dp)
             )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun styledTextFieldButton(navController: NavController,
+                          value: MutableState<String>,
+                          hint: String,
+                          focusManager: FocusManager,
+                          image: Int,
+                          keyboardType: KeyboardType) {
+    OutlinedTextField(
+        value = value.value,
+        onValueChange = { value.value = it },
+        shape = RoundedCornerShape(20.dp),
+        label = {
+            Text(
+                text = hint
+            )
+        },
+
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
+
+
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            fontDark,
+            unfocusedLabelColor = fontDark,
+            unfocusedBorderColor = fontLight,
+            focusedBorderColor = fontLight,
+            focusedLabelColor = fontDark,
+            cursorColor = fontLight
+        ),
+        leadingIcon = {
+            Button(
+                onClick = {
+                    navController.navigate(Routes.Profile.withArgs("TODO"))
+                          },
+                contentPadding = PaddingValues(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                )
+            ) {
+                Image (
+                    painter = painterResource(id = image),
+                    contentDescription = hint,
+                    modifier = Modifier.height(20.dp)
+                )
+            }
         },
         modifier = Modifier.fillMaxWidth()
     )

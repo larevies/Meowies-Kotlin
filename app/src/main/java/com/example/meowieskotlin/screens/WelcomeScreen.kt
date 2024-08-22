@@ -1,4 +1,4 @@
-package com.example.meowieskotlin
+package com.example.meowieskotlin.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -11,10 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -33,15 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.meowieskotlin.R
+import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.ui.theme.backgroundColor
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun Welcome(navController: NavController){
@@ -115,7 +112,9 @@ fun Welcome(navController: NavController){
                 ){
                     Button(
                         onClick = {
-                            navController.navigate(Routes.SignIn.route)
+                            navController.navigate(Routes.SignIn.route) {
+                                popUpTo(Routes.Welcome.route)
+                            }
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -144,7 +143,9 @@ fun Welcome(navController: NavController){
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
                         onClick = {
-                            navController.navigate(Routes.SignUp.route)
+                            navController.navigate(Routes.SignUp.route) {
+                                popUpTo(Routes.Welcome.route)
+                            }
                         },
                         modifier = Modifier
                             .weight(1f)
