@@ -42,7 +42,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 @Composable
-fun textField(text: String, size: Int, color: Color) {
+fun textFieldAligned(text: String, size: Int, color: Color) {
     Text(
         text = text,
         modifier = Modifier.fillMaxWidth(),
@@ -50,6 +50,18 @@ fun textField(text: String, size: Int, color: Color) {
             color,
             fontSize = size.sp,
             textAlign = TextAlign.Center
+        )
+    )
+}
+@Composable
+fun textField(text: String, size: Int, color: Color) {
+    Text(
+        text = text,
+        modifier = Modifier.fillMaxWidth(),
+        style = TextStyle(
+            color,
+            fontSize = size.sp//,
+            //textAlign = TextAlign.Center
         )
     )
 }

@@ -7,6 +7,8 @@ sealed class Routes (val route: String) {
     object Search : Routes("search")
     object Bookmarks : Routes("bookmarks")
     object Profile : Routes("profile")
+    object Change : Routes("change")
+    object Picture : Routes("picture")
 
     fun withArgs(vararg args: String): String {
         return buildString {

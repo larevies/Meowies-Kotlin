@@ -16,7 +16,7 @@ data class Intel(
 )
 
 @Serializable
-data class Name(
+data class UserName(
     val email: String,
     val name: String
 )
@@ -49,6 +49,6 @@ data class UserNoPassword(
     val name: String,
     val email: String,
     val birthday: String,
-    val profilePicture: Int
+    var profilePicture: Int
 
 )

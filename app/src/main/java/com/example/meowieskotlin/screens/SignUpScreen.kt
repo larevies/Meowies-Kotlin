@@ -285,7 +285,7 @@ fun ScreenOne(name: MutableState<String>, email: MutableState<String>,
         textFieldOneIcon(
             text = "What's your name?",
             value = name,
-            hint = "Name",
+            hint = "com.example.meowieskotlin.modules.Name",
             focusManager = focusManager,
             image = R.drawable.id,
             KeyboardType.Text

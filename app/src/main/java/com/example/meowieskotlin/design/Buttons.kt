@@ -43,28 +43,7 @@ fun button(onClick: () -> Unit, text: String, background: Color) {
             )
         )
     }
-}/*
-@Composable
-fun buttonLight(onClick: () -> Unit, text: String) {
-    Button(
-        modifier = Modifier
-            .heightIn(48.dp)
-            .fillMaxWidth(),
-        border = BorderStroke(2.dp, fontLight),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = fontMedium
-        ),
-        onClick = onClick) {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontLight,
-                fontSize = 20.sp
-            )
-        )
-    }
-}*/
+}
 
 @Composable
 fun navigationButton(navController: NavController, route: String, image: Int, text: String, size: Dp) {
@@ -74,8 +53,7 @@ fun navigationButton(navController: NavController, route: String, image: Int, te
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
-        )//,
-        //modifier = Modifier.offset(x = 10.dp, y = 25.dp)
+        )
     ) {
         Image(
             painter = painterResource(id = image),

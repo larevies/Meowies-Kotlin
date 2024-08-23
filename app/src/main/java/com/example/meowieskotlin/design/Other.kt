@@ -70,3 +70,22 @@ fun errorMessage(message: MutableState<String>) {
             .padding(top = 10.dp)
     )
 }
+
+@Composable
+fun getImage(id: Int?): Int {
+    return when(id) {
+        1 -> R.drawable.icon1
+        2 -> R.drawable.icon2
+        3 -> R.drawable.icon3
+        4 -> R.drawable.icon4
+        5 -> R.drawable.icon5
+        6 -> R.drawable.icon6
+        7 -> R.drawable.icon7
+        8 -> R.drawable.icon8
+        9 -> R.drawable.icon9
+        10 -> R.drawable.icon10
+        11 -> R.drawable.icon11
+        12 -> R.drawable.icon12
+        else -> R.drawable.cat
+    }
+}

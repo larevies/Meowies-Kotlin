@@ -30,7 +30,7 @@ import com.example.meowieskotlin.design.errorMessage
 import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.passwordField
-import com.example.meowieskotlin.design.textField
+import com.example.meowieskotlin.design.textFieldAligned
 import com.example.meowieskotlin.design.textFieldOneIcon
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.authorizeAsync
@@ -48,7 +48,7 @@ fun SignIn(navController: NavController) {
     val focusManager = LocalFocusManager.current
 
     val errorMessage = remember {
-        mutableStateOf("xcvb")
+        mutableStateOf("")
     }
 
     val password = remember {
@@ -125,7 +125,7 @@ fun SignIn(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                textField(text = "Happy to see you again!",
+                textFieldAligned(text = "Happy to see you again!",
                     size = 44, color = Color.White)
                 Spacer(modifier = Modifier.height(30.dp))
                 textFieldOneIcon(
