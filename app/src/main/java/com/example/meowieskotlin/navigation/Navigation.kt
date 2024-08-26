@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.meowieskotlin.screens.Bookmarks
 import com.example.meowieskotlin.screens.Change
+import com.example.meowieskotlin.screens.Film
 import com.example.meowieskotlin.screens.Profile
 import com.example.meowieskotlin.screens.ProfilePicture
 import com.example.meowieskotlin.screens.Search
@@ -97,6 +98,26 @@ fun Navigation(){
         ) { entry ->
             ProfilePicture(navController = navController,
                 entry.arguments?.getString("user"))
+        }
+        composable(
+            route = Routes.Film.route + "/{user}/{movie}",
+            arguments = listOf(
+                navArgument("user") {
+                    type = NavType.StringType
+                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
+                    nullable = true
+                },
+                navArgument("movie") {
+                    type = NavType.StringType
+                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
+                    nullable = true
+                }
+            )
+        ) { entry ->
+            Film(navController = navController,
+                entry.arguments?.getString("user"),
+                entry.arguments?.getString("movie")
+            )
         }
     }
 }

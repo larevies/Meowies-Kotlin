@@ -1,14 +1,11 @@
 package com.example.meowieskotlin.design
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.DatePicker
@@ -27,8 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
@@ -132,7 +127,7 @@ fun styledTextField(value: MutableState<String>, hint: String, focusManager: Foc
     )
 }
 
-
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun styledTextFieldButton(navController: NavController,
@@ -140,7 +135,8 @@ fun styledTextFieldButton(navController: NavController,
                           hint: String,
                           focusManager: FocusManager,
                           image: Int,
-                          keyboardType: KeyboardType) {
+                          keyboardType: KeyboardType,
+                          onClick: () -> Unit) {
     OutlinedTextField(
         value = value.value,
         onValueChange = { value.value = it },
@@ -165,9 +161,7 @@ fun styledTextFieldButton(navController: NavController,
         ),
         leadingIcon = {
             Button(
-                onClick = {
-                    navController.navigate(Routes.Profile.withArgs("TODO"))
-                          },
+                onClick = { onClick },
                 contentPadding = PaddingValues(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
@@ -182,4 +176,4 @@ fun styledTextFieldButton(navController: NavController,
         },
         modifier = Modifier.fillMaxWidth()
     )
-}
+}*/

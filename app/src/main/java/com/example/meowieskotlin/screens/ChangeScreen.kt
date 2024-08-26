@@ -140,7 +140,6 @@ fun Change(navController: NavController, user: String?) {
             )
     ) {
         background()
-
         logo()
         Column(verticalArrangement = Arrangement.SpaceBetween) {
             Row(
