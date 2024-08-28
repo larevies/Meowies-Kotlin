@@ -2,6 +2,7 @@ package com.example.meowieskotlin.modules
 
 import kotlinx.serialization.Serializable
 
+
 @Serializable
 data class Movie(
     val id: Int? = null,
@@ -13,38 +14,57 @@ data class Movie(
     val slogan: String? = null,
     val poster: String? = null,
     val description: String? = null,
-    val roles: List<Role>? = null  // actor ID
+    val roles: List<Role>? = null
 )
+
 
 @Serializable
 data class Actor(
-    val id: Int,
+    val id: Int? = null,
     val name: String,
-    val movies: List<Int>, // movie ID
-    val facts: List<String>,
-    val birthday: String,
+    val roles: List<Role>? = null,//TODO
+    val facts: List<String>? = null,//TODO
+    val birthday: String? = null,
     val death: String? = null,
     val placeOfBirth: String? = null,
-    val photo: String,
-    val biography: String
+    val photo: String? = null,
+    val biography: String? = null//TODO
 )
 
 
 @Serializable
 data class Role(
     val id: Int,
-    val name: String
+    val actorName: String,
+    val roleName: String,
+    val movieName: String,
+    val idActor: Int,
+    val idMovie: Int
 )
+
 
 val emptyMovie = Movie(
     id = null,
-    title = "No movies correspond to your request!",
+    title = "Getting the info for you",
     year = null,
     ageRating = null,
     rating = null,
     votes = null,
     slogan = null,
-    poster = null,
+    poster = "",
     description = null,
     roles = null
+)
+
+
+val emptyActor = Actor(
+    id = null,
+    name = "No actor found with this id",
+    roles = null,
+    facts = null,
+    birthday = null,
+    death = null,
+    placeOfBirth = null,
+    photo = null,
+    biography = null
 )

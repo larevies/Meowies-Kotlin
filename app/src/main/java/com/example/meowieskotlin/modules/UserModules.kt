@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Bookmark(
     val id: Int? = null,
-    val movieId: Int,
-    val userId: Int
+    val movieId: Int? = null,
+    val userId: Int? = null
 )
 
 @Serializable

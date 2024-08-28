@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.requests
 
+import com.example.meowieskotlin.modules.Actor
 import com.example.meowieskotlin.modules.Movie
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -32,11 +33,14 @@ suspend fun getMovieByName(name: String): List<Movie>?  {
     return if (httpResponse.status.value in 200..299) {
         try {
             val movies : List<Movie> = httpResponse.body()
+            client.close()
             movies
         } catch (e:Exception) {
+            client.close()
             null
         }
     } else {
+        client.close()
         null
     }
 }
@@ -60,12 +64,45 @@ suspend fun getMovieById(id: String): Movie?  {
     return if (httpResponse.status.value in 200..299) {
         try {
             val movie : Movie = httpResponse.body()
+            client.close()
             movie
         } catch (e:Exception) {
+            client.close()
             null
         }
     } else {
+        client.close()
         null
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
+fun getActorByIdAsync(id: String) = GlobalScope.async {
+    getActorById(id)
+}
+suspend fun getActorById(id: String): Actor?  {
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json()
+        }
+        engine {
+            connectTimeout = 3000
+            socketTimeout = 3000
+        }
+    }
+
+    val httpResponse : HttpResponse = client.get("$apiAddress/actor/id/$id")
+    return if (httpResponse.status.value in 200..299) {
+        try {
+            val actor : Actor = httpResponse.body()
+            client.close()
+            actor
+        } catch (e:Exception) {
+            client.close()
+            null
+        }
+    } else {
+        client.close()
+        null
+    }
+}

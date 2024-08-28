@@ -10,6 +10,7 @@ sealed class Routes (val route: String) {
     object Change : Routes("change")
     object Picture : Routes("picture")
     object Film : Routes("film")
+    object Person : Routes("person")
 
     fun withArgs(vararg args: String): String {
         return buildString {

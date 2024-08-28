@@ -92,8 +92,13 @@ suspend fun register(name: String, email: String, password: String, birthday: St
         )
     }
 
-    client.close()
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 
 }
 
@@ -124,7 +129,13 @@ suspend fun switchPicture(email: String, pic: Int): Boolean {
         )
     }
 
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -153,7 +164,13 @@ suspend fun switchPassword(email: String, newPassword: String): Boolean {
         )
     }
 
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -182,7 +199,13 @@ suspend fun switchEmail(email: String, newEmail: String): Boolean {
         )
     }
 
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -211,7 +234,13 @@ suspend fun switchName(email: String, newName: String): Boolean {
         )
     }
 
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -240,5 +269,11 @@ suspend fun checkPassword(email: String, oldPassword: String): Boolean {
         )
     }
 
-    return httpResponse.status.value in 200..299
+    return if (httpResponse.status.value in 200..299) {
+        client.close()
+        true
+    } else {
+        client.close()
+        false
+    }
 }

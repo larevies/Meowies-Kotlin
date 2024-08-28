@@ -265,18 +265,7 @@ fun ScreenOne(name: MutableState<String>, email: MutableState<String>,
               message: MutableState<String>) {
 
     val focusManager = LocalFocusManager.current
-    
 
-
-    /*LaunchedEffect(email.value) {
-        if (email.value != "" &&
-            !email.value.matches(emailRegex.toRegex())
-            ) {
-            message.value = "Doesn't look like an e-mail"
-        } else {
-            message.value = ""
-        }
-    }*/
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -285,7 +274,7 @@ fun ScreenOne(name: MutableState<String>, email: MutableState<String>,
         textFieldOneIcon(
             text = "What's your name?",
             value = name,
-            hint = "com.example.meowieskotlin.modules.Name",
+            hint = "Name",
             focusManager = focusManager,
             image = R.drawable.id,
             KeyboardType.Text
@@ -424,7 +413,7 @@ fun ScreenThree(selectedDate: String,
 }
 
 fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return formatter.format(Date(millis))
 }
 

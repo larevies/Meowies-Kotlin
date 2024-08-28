@@ -178,7 +178,6 @@ fun Search(navController: NavController, user: String?) {
                                     } catch (e: Exception) {
                                         print(e)
                                     }
-
                                     },
                                     contentPadding = PaddingValues(),
                                     colors = ButtonDefaults.buttonColors(

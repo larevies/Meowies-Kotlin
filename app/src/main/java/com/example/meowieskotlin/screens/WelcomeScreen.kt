@@ -78,7 +78,8 @@ fun Welcome(navController: NavController){
                 Text(
                     text = "Meowies!",
                     modifier = Modifier
-                        .fillMaxWidth().weight(0.5f),
+                        .fillMaxWidth()
+                        .weight(0.5f),
                     style = TextStyle(
                         fontDark,
                         fontSize = 40.sp,
@@ -90,7 +91,8 @@ fun Welcome(navController: NavController){
                     text = "The best platform ever for saving every " +
                             "movie you'd like to watch!",
                     modifier = Modifier
-                        .fillMaxWidth().weight(1.0f),
+                        .fillMaxWidth()
+                        .weight(1.0f),
                     style = TextStyle(
                         fontLight,
                         fontSize = 25.sp,
@@ -108,7 +110,8 @@ fun Welcome(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp).weight(1.0f)
+                        .padding(8.dp)
+                        .weight(1.0f)
                 ){
                     Button(
                         onClick = {
