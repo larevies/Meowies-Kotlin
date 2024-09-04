@@ -74,7 +74,17 @@ fun Profile(navController: NavController) {
         ) {
 
             Button(onClick = {
+
                 navController.navigate(Routes.Welcome.route)
+
+                val editor = sharedPref.edit()
+                editor.remove("user_id")
+                editor.remove("user_email")
+                editor.remove("user_birthday")
+                editor.remove("user_picture")
+                editor.remove("user_name")
+                editor.apply()
+
             },
                 contentPadding = PaddingValues(),
                 colors = ButtonDefaults.buttonColors(

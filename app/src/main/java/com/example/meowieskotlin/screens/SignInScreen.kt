@@ -161,7 +161,7 @@ fun SignIn(navController: NavController) {
                                     val loggedUser = user.await()
                                     if (loggedUser != null) {
 
-                                        editor.apply { putInt("id", loggedUser.id ) }
+                                        editor.apply { putInt("user_id", loggedUser.id ) }
                                         editor.apply { putString("user_email", loggedUser.email ) }
                                         editor.apply { putString("user_birthday", loggedUser.birthday ) }
                                         editor.apply { putInt("user_picture", loggedUser.profilePicture ) }

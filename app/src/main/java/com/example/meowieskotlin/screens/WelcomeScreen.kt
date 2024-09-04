@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -43,137 +45,144 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun Welcome(navController: NavController) {
 
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+    val isSigned = sharedPref.getString("user_email", "")
+    if (isSigned != "") {
+        navController.navigate(Routes.Search.route)
+    } else {
 
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setSystemBarsColor(color = fontMedium)
-    Surface(
-        color = backgroundColor,
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Box(
+        val systemUiController = rememberSystemUiController()
+        systemUiController.setSystemBarsColor(color = fontMedium)
+        Surface(
+            color = backgroundColor,
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush
-                        .verticalGradient(
-                            listOf(
-                                fontMedium,
-                                backgroundLight
-                            )
-                        ),
-                )
         ) {
-            Column (
-                modifier = Modifier.padding(30.dp)
-            ) {
-                Text(
-                    text = "Welcome to",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    style = TextStyle(
-                        fontLight,
-                        fontSize = 40.sp,
-                        textAlign = TextAlign.Center
-                    )
-                )
-                Text(
-                    text = "Meowies!",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(0.5f),
-                    style = TextStyle(
-                        fontDark,
-                        fontSize = 40.sp,
-                        textAlign = TextAlign.Center
-                    )
-                )
-                Spacer(modifier = Modifier.padding(10.dp))
-                Text(
-                    text = "The best platform ever for saving every " +
-                            "movie you'd like to watch!",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1.0f),
-                    style = TextStyle(
-                        fontLight,
-                        fontSize = 25.sp,
-                        textAlign = TextAlign.Center
-                    )
-                )
-                Image (
-                    painter = painterResource(id = R.drawable.cats),
-                    contentDescription = "Cats!",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.weight(2.5f)
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .weight(1.0f)
-                ){
-                    Button(
-                        onClick = {
-                            navController.navigate(Routes.SignIn.route) {
-                                popUpTo(Routes.Welcome.route)
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth(),
-                        contentPadding = PaddingValues(),
-                        border = BorderStroke(2.dp, fontLight),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent
-                        )
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(50.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Sign in",
-                                style = TextStyle(
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush
+                            .verticalGradient(
+                                listOf(
                                     fontMedium,
-                                    fontSize = 18.sp
+                                    backgroundLight
                                 )
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.padding(10.dp))
-                    Button(
-                        onClick = {
-                            navController.navigate(Routes.SignUp.route) {
-                                popUpTo(Routes.Welcome.route)
-                            }
-                        },
+                            ),
+                    )
+            ) {
+                Column(
+                    modifier = Modifier.padding(30.dp)
+                ) {
+                    Text(
+                        text = "Welcome to",
                         modifier = Modifier
-                            .weight(1f)
                             .fillMaxWidth(),
-                        contentPadding = PaddingValues(),
-                        border = BorderStroke(2.dp, fontLight),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = fontMedium
+                        style = TextStyle(
+                            fontLight,
+                            fontSize = 40.sp,
+                            textAlign = TextAlign.Center
                         )
+                    )
+                    Text(
+                        text = "Meowies!",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(0.5f),
+                        style = TextStyle(
+                            fontDark,
+                            fontSize = 40.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Text(
+                        text = "The best platform ever for saving every " +
+                                "movie you'd like to watch!",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1.0f),
+                        style = TextStyle(
+                            fontLight,
+                            fontSize = 25.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.cats),
+                        contentDescription = "Cats!",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.weight(2.5f)
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .weight(1.0f)
                     ) {
-                        Box(
+                        Button(
+                            onClick = {
+                                navController.navigate(Routes.SignIn.route) {
+                                    popUpTo(Routes.Welcome.route)
+                                }
+                            },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(50.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Sign up",
-                                style = TextStyle(
-                                    fontLight,
-                                    fontSize = 18.sp
-                                )
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(),
+                            border = BorderStroke(2.dp, fontLight),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
                             )
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(50.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Sign in",
+                                    style = TextStyle(
+                                        fontMedium,
+                                        fontSize = 18.sp
+                                    )
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.padding(10.dp))
+                        Button(
+                            onClick = {
+                                navController.navigate(Routes.SignUp.route) {
+                                    popUpTo(Routes.Welcome.route)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(),
+                            border = BorderStroke(2.dp, fontLight),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = fontMedium
+                            )
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(50.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Sign up",
+                                    style = TextStyle(
+                                        fontLight,
+                                        fontSize = 18.sp
+                                    )
+                                )
+                            }
                         }
                     }
                 }
