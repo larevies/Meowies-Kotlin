@@ -35,7 +35,6 @@ data class NewEmail(
 
 @Serializable
 data class User(
-    //val id: Int? = null,
     val name: String,
     val email: String,
     val password: String,
@@ -45,7 +44,7 @@ data class User(
 
 @Serializable
 data class UserNoPassword(
-    val id: Int? = null,
+    val id: Int, //? = null,
     val name: String,
     val email: String,
     val birthday: String,

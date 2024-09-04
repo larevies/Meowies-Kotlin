@@ -32,82 +32,27 @@ fun Navigation(){
         {
             SignUp(navController = navController)
         }
-        composable(
-            route = Routes.Search.route + "/{user}",
-            arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                }
-            )
-        ) { entry ->
-            Search(navController = navController,
-                user = entry.arguments?.getString("user"))
+        composable(route = Routes.Search.route) {
+            Search(navController = navController)
+        }
+        composable(route = Routes.Bookmarks.route)
+        {
+            Bookmarks(navController = navController)
+        }
+        composable(route = Routes.Profile.route)
+        {
+            Profile(navController = navController)
+        }
+        composable(route = Routes.Change.route)
+        {
+            Change(navController = navController)
+        }
+        composable(route = Routes.Picture.route) {
+            ProfilePicture(navController = navController)
         }
         composable(
-            route = Routes.Bookmarks.route + "/{user}",
+            route = Routes.Film.route + "/{movie}",
             arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                }
-            )
-        )
-        {entry ->
-            Bookmarks(navController = navController,
-                entry.arguments?.getString("user"))
-        }
-        composable(
-            route = Routes.Profile.route + "/{user}",
-            arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                }
-            )
-        )
-        {entry ->
-            Profile(navController = navController,
-                entry.arguments?.getString("user"))
-        }
-        composable(
-            route = Routes.Change.route + "/{user}",
-            arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                }
-            )
-        )
-        {entry ->
-            Change(navController = navController,
-                entry.arguments?.getString("user"))
-        }
-        composable(
-            route = Routes.Picture.route + "/{user}",
-            arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                }
-            )
-        ) { entry ->
-            ProfilePicture(navController = navController,
-                entry.arguments?.getString("user"))
-        }
-        composable(
-            route = Routes.Film.route + "/{user}/{movie}",
-            arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                },
                 navArgument("movie") {
                     type = NavType.StringType
                     defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
@@ -116,27 +61,21 @@ fun Navigation(){
             )
         ) { entry ->
             Film(navController = navController,
-                entry.arguments?.getString("user"),
                 entry.arguments?.getString("movie")
             )
         }
         composable(
-            route = Routes.Person.route + "/{user}/{id}",
+            route = Routes.Person.route + "/{id}",
             arguments = listOf(
-                navArgument("user") {
-                    type = NavType.StringType
-                    defaultValue = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}"
-                    nullable = true
-                },
                 navArgument("id") {
                     type = NavType.StringType
                     defaultValue = "0"
                     nullable = true
                 }
             )
-        ) { entry ->
+        ) {
+                entry ->
             Person(navController = navController,
-                entry.arguments?.getString("user"),
                 entry.arguments?.getString("id")
             )
         }

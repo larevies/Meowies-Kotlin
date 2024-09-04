@@ -73,6 +73,8 @@ const val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$"
 @Composable
 fun SignUp(navController: NavController) {
 
+
+
     Surface (
         modifier = Modifier.fillMaxSize()
     ) {

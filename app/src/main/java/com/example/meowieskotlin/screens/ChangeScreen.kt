@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,7 +46,6 @@ import com.example.meowieskotlin.design.passwordField
 import com.example.meowieskotlin.design.styledTextField
 import com.example.meowieskotlin.design.textField
 import com.example.meowieskotlin.design.textFieldAligned
-import com.example.meowieskotlin.modules.UserNoPassword
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.checkPasswordAsync
 import com.example.meowieskotlin.requests.switchEmailAsync
@@ -54,17 +55,18 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 
 
 @Composable
-fun Change(navController: NavController, user: String?) {
+fun Change(navController: NavController) {
 
-    val userDecoded = Json.decodeFromString<UserNoPassword>(user.toString())
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
-    val userMutable = remember {
-        mutableStateOf(userDecoded)
-    }
+    val name = sharedPref.getString("user_name", "Kitty").toString()
+    val email = sharedPref.getString("user_email", "email").toString()
+    val picture = sharedPref.getInt("user_picture", 1)
+
     val newName = remember {
         mutableStateOf("")
     }
@@ -149,14 +151,14 @@ fun Change(navController: NavController, user: String?) {
             ) {
                 goBackButton(
                     navController = navController,
-                    route = Routes.Profile.withArgs(user.toString()),
+                    route = Routes.Profile.route,
                     text = "Go back",
                     size = 40.dp
                 )
 
                 Button(
                     onClick = {
-                        navController.navigate(Routes.Picture.withArgs(user.toString()))
+                        navController.navigate(Routes.Picture.route)
                               },
                     modifier = Modifier
                         .height(60.dp)
@@ -167,9 +169,8 @@ fun Change(navController: NavController, user: String?) {
                         containerColor = Color.Transparent
                     )
                 ) {
-                    val id = userMutable.value.profilePicture
                     Image(
-                        painter = painterResource(id = getImage(id = id)),
+                        painter = painterResource(id = getImage(id = picture)),
                         contentDescription = "Profile picture"
                     )
                 }
@@ -191,7 +192,7 @@ fun Change(navController: NavController, user: String?) {
                 Spacer(modifier = Modifier.padding(15.dp))
                 textField(text = "Name", size = 22, color = Color.White)
                 textField(
-                    text = "Your current name: ${userDecoded.name}",
+                    text = "Your current name: $name",
                     size = 20,
                     color = Color.White
                 )
@@ -203,7 +204,7 @@ fun Change(navController: NavController, user: String?) {
                 textFieldAligned(text = nameMessage.value, size = 15, color = fontDark)
                 button(onClick = {
                         val success = switchNameAsync(
-                            userMutable.value.email,
+                            email,
                             newName.value
                         )
                         runBlocking {
@@ -220,7 +221,7 @@ fun Change(navController: NavController, user: String?) {
                 Spacer(modifier = Modifier.padding(30.dp))
                 textField(text = "Email", size = 22, color = Color.White)
                 textField(
-                    text = "Your current email: ${userDecoded.email}",
+                    text = "Your current email: $email",
                     size = 20,
                     color = Color.White
                 )
@@ -234,7 +235,7 @@ fun Change(navController: NavController, user: String?) {
                     onClick = {
                         if (isEmailValid.value) {
                             val success = switchEmailAsync(
-                                userMutable.value.email,
+                                email,
                                 newEmail.value
                             )
                             runBlocking {
@@ -277,10 +278,10 @@ fun Change(navController: NavController, user: String?) {
                 button(
                     onClick = {
                         if (isPasswordValid.value) {
-                            val match = checkPasswordAsync(userMutable.value.email, oldPassword.value)
+                            val match = checkPasswordAsync(email, oldPassword.value)
                             runBlocking {
                                 if (match.await()) {
-                                    val change = switchPasswordAsync(userMutable.value.email, newPassword.value)
+                                    val change = switchPasswordAsync(email, newPassword.value)
                                     runBlocking {
                                         if (change.await()) {
                                             passwordMessage.value = "Success!"
@@ -320,7 +321,7 @@ fun Change(navController: NavController, user: String?) {
             }
         }
 
-        bottomNavigation(navController = navController, user.toString())
+        bottomNavigation(navController = navController)
     }
 }
 
@@ -328,5 +329,5 @@ fun Change(navController: NavController, user: String?) {
 @Preview
 @Composable
 fun ChangePreview() {
-    Change(navController = rememberNavController(), user = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}")
+    Change(navController = rememberNavController())
 }

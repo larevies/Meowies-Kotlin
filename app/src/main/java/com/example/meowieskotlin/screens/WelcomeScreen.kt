@@ -41,7 +41,9 @@ import com.example.meowieskotlin.ui.theme.fontMedium
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun Welcome(navController: NavController){
+fun Welcome(navController: NavController) {
+
+
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(color = fontMedium)
     Surface(

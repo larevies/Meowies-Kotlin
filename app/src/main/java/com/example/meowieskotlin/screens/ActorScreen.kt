@@ -56,7 +56,7 @@ import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun Person(navController: NavController, user: String?, id: String?) {
+fun Person(navController: NavController, id: String?) {
 
     val actor = remember {
         mutableStateOf(emptyActor)
@@ -85,7 +85,7 @@ fun Person(navController: NavController, user: String?, id: String?) {
         background()
         goBackButton(
             navController = navController,
-            route = Routes.Search.withArgs(user.toString()),
+            route = Routes.Search.route,
             text = "Go back", 40.dp
         )
         logo()
@@ -195,10 +195,7 @@ fun Person(navController: NavController, user: String?, id: String?) {
                             Button(
                                 onClick = {
                                     navController.navigate(
-                                        Routes.Film.withArgs(
-                                            user.toString(),
-                                            role.idMovie.toString()
-                                        )
+                                        Routes.Film.withArgs(role.idMovie.toString())
                                     )
                                 },
                                 colors = ButtonDefaults.buttonColors(
@@ -239,12 +236,12 @@ fun Person(navController: NavController, user: String?, id: String?) {
                 Spacer(modifier = Modifier.padding(70.dp))
             }
         }
-        bottomNavigation(navController = navController, arg = user.toString())
+        bottomNavigation(navController = navController)
     }
 }
 
 @Preview
 @Composable
 fun PersonPreview() {
-    Person(rememberNavController(), user = "", id = "1")
+    Person(rememberNavController(), id = "1")
 }

@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,23 +38,20 @@ import com.example.meowieskotlin.design.button
 import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
-import com.example.meowieskotlin.modules.UserNoPassword
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.switchPictureAsync
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ProfilePicture(navController: NavController, user: String?) {
+fun ProfilePicture(navController: NavController) {
 
-    val userDecoded = Json.decodeFromString<UserNoPassword>(user.toString())
-    val userMutable = remember {
-        mutableStateOf(userDecoded)
-    }
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+
+    val email = sharedPref.getString("user_email", "email").toString()
 
     val kitties = listOf(
         R.drawable.icon1,
@@ -88,7 +87,7 @@ fun ProfilePicture(navController: NavController, user: String?) {
     ) {
         background()
         goBackButton(navController = navController,
-            route = Routes.Profile.withArgs(Json.encodeToString(userMutable.value)),
+            route = Routes.Profile.route,
             text = "Go back", 40.dp)
         logo()
         Box(modifier = Modifier.fillMaxSize(),
@@ -122,9 +121,11 @@ fun ProfilePicture(navController: NavController, user: String?) {
                     onClick = {
                         try {
                             val kittyId = (pagerState.currentPage % kitties.size) + 1
-                            userMutable.value.profilePicture = kittyId
+                            val editor = sharedPref.edit()
+                            editor.apply { putInt("user_picture", kittyId) }
+                            editor.apply()
                             val success = switchPictureAsync(
-                                userMutable.value.email,
+                                email,
                                 kittyId
                             )
                             runBlocking {
@@ -143,8 +144,7 @@ fun ProfilePicture(navController: NavController, user: String?) {
                 )
             }
             textFieldAligned(text = text.value, size = 20, color = Color.White)
-            bottomNavigation(navController = navController,
-                arg = Json.encodeToString(userMutable.value))
+            bottomNavigation(navController = navController)
         }
     }
 
@@ -172,6 +172,5 @@ fun KittyBox(kitty: Int) {
 @Preview
 @Composable
 fun ProfilePicturePreview() {
-    ProfilePicture(rememberNavController(),
-        user = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}")
+    ProfilePicture(rememberNavController())
 }

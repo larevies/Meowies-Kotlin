@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,10 +24,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -35,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -43,8 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -55,7 +52,7 @@ import com.example.meowieskotlin.design.errorMessage
 import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
-import com.example.meowieskotlin.modules.UserNoPassword
+import com.example.meowieskotlin.events.OnLifecycleEvent
 import com.example.meowieskotlin.modules.emptyMovie
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.addBookmarkAsync
@@ -67,31 +64,15 @@ import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 
 
 @Composable
-fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
-    val eventHandler = rememberUpdatedState(onEvent)
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
+fun Film(navController: NavController, movie: String?) {
 
-    DisposableEffect(lifecycleOwner.value) {
-        val lifecycle = lifecycleOwner.value.lifecycle
-        val observer = LifecycleEventObserver { owner, event ->
-            eventHandler.value(owner, event)
-        }
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
-        }
-    }
-}
-
-@Composable
-fun Film(navController: NavController, user: String?, movie: String?) {
-
-    val userDecoded = Json.decodeFromString<UserNoPassword>(user.toString())
+    val id = sharedPref.getInt("user_id", 1)
 
     val message = remember {
         mutableStateOf("")
@@ -112,7 +93,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
             Lifecycle.Event.ON_RESUME -> {
                 val job = getMovieByIdAsync(movie.toString())
                 val success = getBookmarkAsync(
-                    userDecoded.id,
+                    id,
                     movie.toString().toInt()
                 )
 
@@ -144,7 +125,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
     ) {
         background()
         goBackButton(navController = navController,
-            route = Routes.Search.withArgs(user.toString()),
+            route = Routes.Search.route,
             text = "Go back", 40.dp)
         logo()
         Spacer(modifier = Modifier.padding(100.dp))
@@ -205,7 +186,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
                             onClick = {
                                 isBookmarked.value = !isBookmarked.value
                                 val success = addBookmarkAsync(
-                                    userDecoded.id,
+                                    id,
                                     movie.toString().toInt()
                                 )
                                 runBlocking {
@@ -229,7 +210,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
                             onClick = {
                                 isBookmarked.value = !isBookmarked.value
                                 val success = deleteBookmarkAsync(
-                                    userDecoded.id,
+                                    id,
                                     movie.toString().toInt()
                                 )
                                 runBlocking {
@@ -348,10 +329,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
                                 Button(
                                     onClick = {
                                         navController.navigate(
-                                            Routes.Person.withArgs(
-                                                user.toString(),
-                                                role.idActor.toString()
-                                            )
+                                            Routes.Person.withArgs(role.idActor.toString())
                                         )
                                     },
                                     colors = ButtonDefaults.buttonColors(
@@ -391,7 +369,7 @@ fun Film(navController: NavController, user: String?, movie: String?) {
                 }
             }
 
-            bottomNavigation(navController = navController, arg = user.toString())
+            bottomNavigation(navController = navController)
         } else {
             Column (horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
@@ -405,32 +383,5 @@ fun Film(navController: NavController, user: String?, movie: String?) {
 @Preview
 @Composable
 fun FilmPreview() {
-    Film(
-        rememberNavController(),
-        user = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}",
-        "1"
-        /*"{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"Avatar\",\n" +
-                "  \"year\": 2009,\n" +
-                "  \"ageRating\": 12,\n" +
-                "  \"rating\": 8.0,\n" +
-                "  \"votes\": 1097191,\n" +
-                "  \"slogan\": \"Enter the World\",\n" +
-                "  \"poster\": \"https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/a615ba02-1152-4ae2-bac1-38ab4c588f2b/3840x\",\n" +
-                "  \"description\": \"A paraplegic Marine dispatched to the moon Pandora on a unique mission becomes torn between following his orders and protecting the world he feels is his home.\",\n" +
-                "  \"roles\": [\n" +
-                "    {\n" +
-                "      \"id\": 1,\n" +
-                "      \"actorName\": \"Sam Worthington\",\n" +
-                "      \"roleName\": \"Jake Sully\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"id\": 2,\n" +
-                "      \"actorName\": \"Zoe Saldana\",\n" +
-                "      \"roleName\": \"Neytiri\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}"*/
-        )
+    Film(rememberNavController(), "1")
 }

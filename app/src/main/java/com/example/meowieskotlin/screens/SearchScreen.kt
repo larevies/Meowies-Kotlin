@@ -58,7 +58,7 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Search(navController: NavController, user: String?) {
+fun Search(navController: NavController) {
 
     val focusManager = LocalFocusManager.current
 
@@ -90,12 +90,6 @@ fun Search(navController: NavController, user: String?) {
             horizontalAlignment = Alignment.CenterHorizontally) {
             textField(text = "Search!", size = 40, color = fontLight)
             Spacer(modifier = Modifier.padding(15.dp))
-
-
-
-
-
-
 
             OutlinedTextField(
                 value = searchRequest.value,
@@ -170,10 +164,8 @@ fun Search(navController: NavController, user: String?) {
                             Row (modifier = Modifier.padding(10.dp)) {
                                 Button(onClick = {
                                     try {
-                                        navController.navigate(Routes.Film.withArgs(
-                                            user.toString(),
-                                            movie.id.toString()
-                                            )
+                                        navController.navigate(
+                                            Routes.Film.withArgs(movie.id.toString())
                                         )
                                     } catch (e: Exception) {
                                         print(e)
@@ -221,12 +213,12 @@ fun Search(navController: NavController, user: String?) {
             }
             Box(modifier = Modifier.weight(1f))
         }
-        bottomNavigation(navController = navController, user.toString())
+        bottomNavigation(navController = navController)
     }
 }
 
 @Preview
 @Composable
 fun SearchPreview() {
-    Search(rememberNavController(), null)
+    Search(rememberNavController())
 }

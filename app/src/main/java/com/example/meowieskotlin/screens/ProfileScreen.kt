@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,13 +18,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,20 +36,21 @@ import com.example.meowieskotlin.design.button
 import com.example.meowieskotlin.design.getImage
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
-import com.example.meowieskotlin.modules.UserNoPassword
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
-import kotlinx.serialization.json.Json
 
 @Composable
-fun Profile(navController: NavController, user: String?) {
-    val userNoPassword = Json.decodeFromString<UserNoPassword>(user.toString())
-    val userMutable = remember {
-        mutableStateOf(userNoPassword)
-    }
+fun Profile(navController: NavController) {
+
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+
+    val name = sharedPref.getString("user_name", "Kitty").toString()
+    val picture = sharedPref.getInt("user_picture", 1)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -71,6 +72,7 @@ fun Profile(navController: NavController, user: String?) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
             Button(onClick = {
                 navController.navigate(Routes.Welcome.route)
             },
@@ -88,7 +90,7 @@ fun Profile(navController: NavController, user: String?) {
             }
             Button(
                 onClick = {
-                    navController.navigate(Routes.Picture.withArgs(user.toString()))
+                    navController.navigate(Routes.Picture.route)
                 },
                 modifier = Modifier
                     .height(60.dp)
@@ -99,9 +101,8 @@ fun Profile(navController: NavController, user: String?) {
                 ),
                 shape = RectangleShape
             ) {
-                val id = userMutable.value.profilePicture
                 Image(
-                    painter = painterResource(id = getImage(id = id)),
+                    painter = painterResource(id = getImage(id = picture)),
                     contentDescription = "Profile picture"
                 )
             }
@@ -113,20 +114,20 @@ fun Profile(navController: NavController, user: String?) {
                 .fillMaxSize()
                 .padding(15.dp)
         ) {
-            textFieldAligned(text = "Hi, ${userMutable.value.name}!", size = 40, color = fontDark)
+            textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
             Spacer(modifier = Modifier.padding(15.dp))
             textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
             Spacer(modifier = Modifier.padding(15.dp))
             button(onClick = {
-                navController.navigate(Routes.Change.withArgs(user.toString()))
+                navController.navigate(Routes.Change.route)
                 }, text = "Change password", background = Color.Transparent)
             Spacer(modifier = Modifier.padding(10.dp))
             button(onClick = {
-                navController.navigate(Routes.Change.withArgs(user.toString()))
+                navController.navigate(Routes.Change.route)
                 }, text = "Change name", background = Color.Transparent)
             Spacer(modifier = Modifier.padding(10.dp))
             button(onClick = {
-                navController.navigate(Routes.Change.withArgs(user.toString()))
+                navController.navigate(Routes.Change.route)
                 }, text = "Change email", background = Color.Transparent)
             Spacer(modifier = Modifier.padding(10.dp))
             button(onClick = { }, text = "Can't change birthday", background = Color.Transparent)
@@ -134,7 +135,7 @@ fun Profile(navController: NavController, user: String?) {
             Image(painter = painterResource(id = R.drawable.pet), contentDescription = "Kitty",
                 modifier = Modifier.height(100.dp))
         }
-        bottomNavigation(navController = navController, user.toString())
+        bottomNavigation(navController = navController)
     }
 }
 
@@ -142,5 +143,5 @@ fun Profile(navController: NavController, user: String?) {
 @Preview
 @Composable
 fun ProfilePreview(){
-    Profile(rememberNavController(), user = "{\"id\":36,\"name\":\"Kitty\",\"email\":\"meow@meow.ru\",\"birthday\":\"2024-07-06\",\"profilePicture\":7}")
+    Profile(rememberNavController())
 }

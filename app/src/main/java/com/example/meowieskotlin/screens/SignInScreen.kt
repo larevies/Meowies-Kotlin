@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,12 +40,14 @@ import com.example.meowieskotlin.ui.theme.backgroundColor
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 
 @Composable
 fun SignIn(navController: NavController) {
+
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+    val editor = sharedPref.edit()
 
     val focusManager = LocalFocusManager.current
 
@@ -156,8 +160,17 @@ fun SignIn(navController: NavController) {
                                 runBlocking {
                                     val loggedUser = user.await()
                                     if (loggedUser != null) {
-                                        val loggedUserJson = Json.encodeToString(loggedUser)
-                                        navController.navigate(Routes.Profile.withArgs(loggedUserJson))
+
+                                        editor.apply { putInt("id", loggedUser.id ) }
+                                        editor.apply { putString("user_email", loggedUser.email ) }
+                                        editor.apply { putString("user_birthday", loggedUser.birthday ) }
+                                        editor.apply { putInt("user_picture", loggedUser.profilePicture ) }
+                                        editor.apply { putString("user_name", loggedUser.name ) }
+                                        editor.apply()
+
+                                        navController.navigate(Routes.Profile.route)
+
+
                                         buttonText.value = "Redirecting"
                                     } else {
                                         errorMessage.value = "Wrong credentials"

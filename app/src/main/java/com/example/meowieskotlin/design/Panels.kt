@@ -22,7 +22,7 @@ import com.example.meowieskotlin.ui.theme.fontMedium
 
 
 @Composable
-fun bottomNavigation(navController: NavController, arg: String) { /*TODO*/
+fun bottomNavigation(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Row (
             modifier = Modifier
@@ -30,36 +30,29 @@ fun bottomNavigation(navController: NavController, arg: String) { /*TODO*/
                 .border(2.dp, Color.White)
                 .fillMaxWidth()
                 .background(fontMedium),
-                //.padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             navigationButton(
                 navController = navController,
-                route = Routes.Search.withArgs(arg),
+                route = Routes.Search.route,
                 image = R.drawable.search,
                 text = "Search",
                 size = 35.dp)
-            /*Image(painter = painterResource(id = R.drawable.search), contentDescription = "Search",
-                modifier = Modifier.height(35.dp))*/
             Spacer(modifier = Modifier.padding(20.dp))
             navigationButton(
                 navController = navController,
-                route = Routes.Bookmarks.withArgs(arg),
+                route = Routes.Bookmarks.route,
                 image = R.drawable.heart,
                 text = "Favorites",
                 size = 35.dp)
-            /*Image(painter = painterResource(id = R.drawable.heart), contentDescription = "Favorites",
-                modifier = Modifier.height(35.dp))*/
             Spacer(modifier = Modifier.padding(20.dp))
             navigationButton(
                 navController = navController,
-                route = Routes.Profile.withArgs(arg),
+                route = Routes.Profile.route,
                 image = R.drawable.cat,
                 text = "Profile",
                 size = 50.dp)
-            /*Image(painter = painterResource(id = R.drawable.cat), contentDescription = "Profile",
-                modifier = Modifier.height(50.dp))*/
         }
     }
 }

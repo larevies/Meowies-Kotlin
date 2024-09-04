@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -26,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +44,6 @@ import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
 import com.example.meowieskotlin.modules.Bookmark
 import com.example.meowieskotlin.modules.Movie
-import com.example.meowieskotlin.modules.UserNoPassword
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.getAllBookmarksAsync
 import com.example.meowieskotlin.requests.getMovieByIdAsync
@@ -50,7 +52,6 @@ import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 
 
 val speech = """
@@ -60,9 +61,11 @@ val speech = """
 """.trimIndent()
 
 @Composable
-fun Bookmarks(navController: NavController, user: String?) {
+fun Bookmarks(navController: NavController) {
 
-    val userDecoded = Json.decodeFromString<UserNoPassword>(user.toString())
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+    val id = sharedPref.getInt("user_id", 1)
 
     val bookmarkPresence = remember {
         mutableStateOf(false)
@@ -83,7 +86,7 @@ fun Bookmarks(navController: NavController, user: String?) {
         mutableStateOf(0)
     }
     runBlocking {
-        val job = getAllBookmarksAsync(userDecoded.id)
+        val job = getAllBookmarksAsync(id)
         if (i.value == 0) {
             val result = job.await()
             if (result != null) {
@@ -129,10 +132,7 @@ fun Bookmarks(navController: NavController, user: String?) {
                                     onClick = {
                                         try {
                                             navController.navigate(
-                                                Routes.Film.withArgs(
-                                                    user.toString(),
-                                                    movie.id.toString()
-                                                )
+                                                Routes.Film.withArgs(movie.id.toString())
                                             )
                                         } catch (e: Exception) {
                                             print(e)
@@ -177,11 +177,13 @@ fun Bookmarks(navController: NavController, user: String?) {
                                 }
                             }
                         }
+                        Spacer(modifier = Modifier.padding(15.dp))
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            Image(painter = painterResource(id = R.drawable.mermaid),
+                                contentDescription = "Mermaid cat")
+                        }
+                        Spacer(modifier = Modifier.padding(70.dp))
                     }
-                    Spacer(modifier = Modifier.padding(15.dp))
-                    Image(painter = painterResource(id = R.drawable.mermaid), 
-                        contentDescription = "Mermaid cat")
-                    Spacer(modifier = Modifier.padding(70.dp))
                 }
             } else {
                 Text(
@@ -197,12 +199,12 @@ fun Bookmarks(navController: NavController, user: String?) {
             }
             Box(modifier = Modifier.weight(1f))
         }
-        bottomNavigation(navController = navController, user.toString())
+        bottomNavigation(navController = navController)
     }
 }
 
 @Preview
 @Composable
 fun BookmarksPreview() {
-    Bookmarks(rememberNavController(), null)
+    Bookmarks(rememberNavController())
 }
