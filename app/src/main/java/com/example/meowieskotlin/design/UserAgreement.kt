@@ -53,7 +53,7 @@ var agreement = """I (hereinafter referred to as the “Personal Data Subject”
 
        The condition for the termination of the personal data processing can be the purpose achievement of personal data processing, the expiration of personal data processing, the withdrawal of Consent by the Personal Data Subject, as well as in case of the identification of illegal personal data processing.
 
-       The personal data of the Personal Data Subject must be dispozed or depersonalized upon achieving of the processing purposes or in case of loss of necessity to achieve these purposes.
+       The personal data of the Personal Data Subject must be disposed or depersonalized upon achieving of the processing purposes or in case of loss of necessity to achieve these purposes.
 
        The Personal Data Subject is familiar with and agrees that according to the contact details provided (e-mail address, phone number), the Operator and/or Third Parties have the right to send messages and SMS notifications/messages, including informational and newsletters, surveys, test materials, invitations to Operator events and/or Third Parties, as well as for the purpose of confirming the identity of the Personal Data Subject.
 

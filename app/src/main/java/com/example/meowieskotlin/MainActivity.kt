@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         setContent {
             MeowiesKotlinTheme {
                 // A surface container using the 'background' color from the theme
@@ -27,8 +26,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("this.moveTaskToBack(true)"))
     override fun onBackPressed() {
-        //Toast.makeText(applicationContext, "Press again if you want to exit", Toast.LENGTH_LONG).show()
         this.moveTaskToBack(true)
     }
 }

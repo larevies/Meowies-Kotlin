@@ -14,12 +14,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -79,7 +78,6 @@ fun textFieldOneIcon(text: String, value: MutableState<String>, hint: String, fo
     styledTextField(value = value, hint = hint, focusManager = focusManager, image = image, keyboardType = keyboardType)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun passwordField(value: MutableState<String>, isVisible: MutableState<Boolean>, text: String, focusManager: FocusManager) {
     OutlinedTextField(
@@ -101,13 +99,17 @@ fun passwordField(value: MutableState<String>, isVisible: MutableState<Boolean>,
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
 
         shape = RoundedCornerShape(20.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            fontDark,
-            unfocusedLabelColor = fontDark,
-            unfocusedBorderColor = fontLight,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = fontDark,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            cursorColor = fontLight,
             focusedBorderColor = fontLight,
+            unfocusedBorderColor = fontLight,
             focusedLabelColor = fontDark,
-            cursorColor = fontLight
+            unfocusedLabelColor = fontDark
         ),
 
         leadingIcon = {
@@ -147,7 +149,6 @@ fun passwordField(value: MutableState<String>, isVisible: MutableState<Boolean>,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focusManager: FocusManager) {
 
@@ -201,13 +202,17 @@ fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focus
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         onValueChange = { },
         shape = RoundedCornerShape(20.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            fontDark,
-            unfocusedLabelColor = fontDark,
-            unfocusedBorderColor = fontLight,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = fontDark,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            cursorColor = fontLight,
             focusedBorderColor = fontLight,
+            unfocusedBorderColor = fontLight,
             focusedLabelColor = fontDark,
-            cursorColor = fontLight
+            unfocusedLabelColor = fontDark,
         ),
         leadingIcon = {
             Image(

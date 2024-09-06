@@ -19,10 +19,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,10 +63,6 @@ data class Item (
     val year: String? = null
 )
 
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(navController: NavController) {
 
@@ -163,13 +158,17 @@ fun Search(navController: NavController) {
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Text),
 
 
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    fontDark,
-                    unfocusedLabelColor = fontDark,
-                    unfocusedBorderColor = fontLight,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = fontDark,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent,
+                    cursorColor = fontLight,
                     focusedBorderColor = fontLight,
+                    unfocusedBorderColor = fontLight,
                     focusedLabelColor = fontDark,
-                    cursorColor = fontLight
+                    unfocusedLabelColor = fontDark
                 ),
                 leadingIcon = {
                     Button(

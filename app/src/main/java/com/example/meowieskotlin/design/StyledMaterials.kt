@@ -13,6 +13,7 @@ import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -83,7 +84,7 @@ fun styledDatePicker(datePickerState: DatePickerState){
             dayInSelectionRangeContainerColor = fontDark,
             dayInSelectionRangeContentColor = fontLight,
             dividerColor = fontMedium,
-            dateTextFieldColors = TextFieldDefaults.textFieldColors(
+            dateTextFieldColors = TextFieldDefaults.colors(
                 focusedTextColor = fontDark,
                 unfocusedTextColor = fontDark
             )
@@ -91,7 +92,6 @@ fun styledDatePicker(datePickerState: DatePickerState){
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun styledTextField(value: MutableState<String>, hint: String, focusManager: FocusManager, image: Int, keyboardType: KeyboardType) {
     OutlinedTextField(
@@ -103,21 +103,23 @@ fun styledTextField(value: MutableState<String>, hint: String, focusManager: Foc
                 text = hint
             )
         },
-        // TODO
-        singleLine = true,
 
+        singleLine = true,
 
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
 
-
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            fontDark,
-            unfocusedLabelColor = fontDark,
-            unfocusedBorderColor = fontLight,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = fontDark,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+            cursorColor = fontLight,
             focusedBorderColor = fontLight,
+            unfocusedBorderColor = fontLight,
             focusedLabelColor = fontDark,
-            cursorColor = fontLight
+            unfocusedLabelColor = fontDark
         ),
         leadingIcon = {
             Image (
@@ -129,54 +131,3 @@ fun styledTextField(value: MutableState<String>, hint: String, focusManager: Foc
         modifier = Modifier.fillMaxWidth()
     )
 }
-
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun styledTextFieldButton(navController: NavController,
-                          value: MutableState<String>,
-                          hint: String,
-                          focusManager: FocusManager,
-                          image: Int,
-                          keyboardType: KeyboardType,
-                          onClick: () -> Unit) {
-    OutlinedTextField(
-        value = value.value,
-        onValueChange = { value.value = it },
-        shape = RoundedCornerShape(20.dp),
-        label = {
-            Text(
-                text = hint
-            )
-        },
-
-        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),
-
-
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            fontDark,
-            unfocusedLabelColor = fontDark,
-            unfocusedBorderColor = fontLight,
-            focusedBorderColor = fontLight,
-            focusedLabelColor = fontDark,
-            cursorColor = fontLight
-        ),
-        leadingIcon = {
-            Button(
-                onClick = { onClick },
-                contentPadding = PaddingValues(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                )
-            ) {
-                Image (
-                    painter = painterResource(id = image),
-                    contentDescription = hint,
-                    modifier = Modifier.height(20.dp)
-                )
-            }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-}*/
