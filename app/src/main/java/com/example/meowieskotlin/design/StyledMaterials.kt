@@ -103,6 +103,9 @@ fun styledTextField(value: MutableState<String>, hint: String, focusManager: Foc
                 text = hint
             )
         },
+        // TODO
+        singleLine = true,
+
 
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = keyboardType),

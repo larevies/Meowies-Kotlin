@@ -9,9 +9,11 @@ import androidx.compose.ui.Modifier
 import com.example.meowieskotlin.navigation.Navigation
 import com.example.meowieskotlin.ui.theme.MeowiesKotlinTheme
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         setContent {
             MeowiesKotlinTheme {
@@ -23,5 +25,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        //Toast.makeText(applicationContext, "Press again if you want to exit", Toast.LENGTH_LONG).show()
+        this.moveTaskToBack(true)
     }
 }

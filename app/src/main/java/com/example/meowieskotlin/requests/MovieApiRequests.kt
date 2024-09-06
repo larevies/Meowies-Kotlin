@@ -77,6 +77,37 @@ suspend fun getMovieById(id: String): Movie?  {
 }
 
 @OptIn(DelicateCoroutinesApi::class)
+fun getActorByNameAsync(name: String) = GlobalScope.async {
+    getActorByName(name)
+}
+suspend fun getActorByName(name: String): List<Actor>?  {
+    val client = HttpClient(Android) {
+        install(ContentNegotiation) {
+            json()
+        }
+        engine {
+            connectTimeout = 3000
+            socketTimeout = 3000
+        }
+    }
+
+    val httpResponse : HttpResponse = client.get("$apiAddress/actor/$name")
+    return if (httpResponse.status.value in 200..299) {
+        try {
+            val actors : List<Actor> = httpResponse.body()
+            client.close()
+            actors
+        } catch (e:Exception) {
+            client.close()
+            null
+        }
+    } else {
+        client.close()
+        null
+    }
+}
+
+@OptIn(DelicateCoroutinesApi::class)
 fun getActorByIdAsync(id: String) = GlobalScope.async {
     getActorById(id)
 }

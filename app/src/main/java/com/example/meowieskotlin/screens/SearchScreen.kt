@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -46,21 +45,31 @@ import com.example.meowieskotlin.R
 import com.example.meowieskotlin.design.background
 import com.example.meowieskotlin.design.bottomNavigation
 import com.example.meowieskotlin.design.textField
-import com.example.meowieskotlin.modules.Movie
-import com.example.meowieskotlin.modules.emptyMovie
 import com.example.meowieskotlin.navigation.Routes
+import com.example.meowieskotlin.requests.getActorByNameAsync
 import com.example.meowieskotlin.requests.getMovieByNameAsync
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Item (
+    val type: Int? = null,
+    val id: Int? = null,
+    val photo: String? = null,
+    val name: String,
+    val year: String? = null
+)
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(navController: NavController) {
-
-    val focusManager = LocalFocusManager.current
 
     val isSearchResultVisible = remember {
         mutableStateOf(false)
@@ -70,7 +79,52 @@ fun Search(navController: NavController) {
         mutableStateOf("")
     }
 
-    val searchResult = remember {mutableListOf<Movie>()}
+    val searchResults = remember { mutableListOf<Item>() }
+
+    fun searchButton() {
+        if (searchRequest.value != "") {
+            try {
+                val successMovie = getMovieByNameAsync(searchRequest.value)
+                val successActor = getActorByNameAsync(searchRequest.value)
+                runBlocking {
+                    searchResults.clear()
+                    val movies = successMovie.await()
+                    if (movies != null) {
+                        for (movie in movies) {
+                            searchResults.add(Item(
+                                type = 0,
+                                id = movie.id,
+                                photo = movie.poster,
+                                name = movie.title,
+                                year = movie.year.toString()
+                            )
+                            )
+                        }
+                    }
+                    val actors = successActor.await()
+                    if (actors != null) {
+                        for (actor in actors) {
+                            searchResults.add(Item(
+                                type = 1,
+                                id = actor.id,
+                                photo = actor.photo,
+                                name = actor.name,
+                                year = actor.birthday
+                            )
+                            )
+                        }
+                    }
+
+                    isSearchResultVisible.value = true
+                }
+            } catch (e: Exception) {
+                searchRequest.value =
+                    "Check your internet connection and try again"
+            }
+        } else {
+            isSearchResultVisible.value = false
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -101,7 +155,11 @@ fun Search(navController: NavController) {
                     )
                 },
 
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        searchButton()
+                    }
+                ),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Text),
 
 
@@ -115,31 +173,7 @@ fun Search(navController: NavController) {
                 ),
                 leadingIcon = {
                     Button(
-                        onClick = {
-                            if (searchRequest.value != "") {
-                                try {
-                                    val success = getMovieByNameAsync(searchRequest.value)
-                                    runBlocking {
-                                        searchResult.clear()
-                                        val movies = success.await()
-                                        if (movies != null) {
-                                            for (movie in movies) {
-                                                searchResult.add(movie)
-                                            }
-                                            if (searchResult.size == 0) {
-                                                searchResult.add(emptyMovie)
-                                            }
-                                        }
-                                        isSearchResultVisible.value = true
-                                    }
-                                } catch (e: Exception) {
-                                    searchRequest.value =
-                                        "Check your internet connection and try again"
-                                }
-                            } else {
-                                isSearchResultVisible.value = false
-                            }
-                        },
+                        onClick = { searchButton() },
                         contentPadding = PaddingValues(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
@@ -160,15 +194,20 @@ fun Search(navController: NavController) {
                     .weight(6f)
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 15.dp)) {
-                    Column { searchResult.forEach{ movie ->
+                    Column { searchResults.forEach{ item ->
                             Row (modifier = Modifier.padding(10.dp)) {
                                 Button(onClick = {
                                     try {
-                                        navController.navigate(
-                                            Routes.Film.withArgs(movie.id.toString())
-                                        )
+                                        if (item.type == 0) {
+                                            navController.navigate(
+                                                Routes.Film.withArgs(item.id.toString()))
+                                        } else if (item.type == 1) {
+                                            navController.navigate(
+                                                Routes.Person.withArgs(item.id.toString()))
+                                        }
                                     } catch (e: Exception) {
-                                        print(e)
+                                        searchRequest.value =
+                                            "Check your internet connection and try again"
                                     }
                                     },
                                     contentPadding = PaddingValues(),
@@ -178,13 +217,13 @@ fun Search(navController: NavController) {
                                     shape = RoundedCornerShape(5.dp)
                                 ) {
                                     AsyncImage(
-                                        model = movie.poster,
-                                        contentDescription = movie.title,
+                                        model = item.photo,
+                                        contentDescription = item.name,
                                         modifier = Modifier.size(60.dp)
                                             .clip(RoundedCornerShape(5.dp)),
                                         contentScale = ContentScale.Crop
                                     )
-                                    Text(text = movie.title,
+                                    Text(text = item.name,
                                         modifier = Modifier.padding(15.dp),
                                         style = TextStyle(
                                             fontDark
@@ -195,7 +234,8 @@ fun Search(navController: NavController) {
                                             fontLight
                                         )
                                     )
-                                    Text(text = movie.year.toString(),
+                                    Text(text = item.year.toString(),
+                                        softWrap = false,
                                         modifier = Modifier.padding(15.dp).weight(1f),
                                         style = TextStyle(
                                             fontLight

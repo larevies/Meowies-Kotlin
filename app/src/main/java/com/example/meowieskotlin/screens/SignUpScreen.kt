@@ -366,7 +366,8 @@ fun ScreenThree(selectedDate: String,
                 datePickerState: DatePickerState,
                 showDatePicker: MutableState<Boolean>,
                 checked: MutableState<Boolean>) {
-    
+
+    val focusManager = LocalFocusManager.current
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -375,7 +376,7 @@ fun ScreenThree(selectedDate: String,
     ) {
         textField(text = "Please, tell us your birthday:", size = 23, color = fontLight)
         Spacer(modifier = Modifier.padding(5.dp))
-        dateField(selectedDate = selectedDate, showDatePicker = showDatePicker)
+        dateField(selectedDate = selectedDate, showDatePicker = showDatePicker, focusManager)
 
         if (showDatePicker.value) {
             Popup(

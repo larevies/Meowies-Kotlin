@@ -60,8 +60,7 @@ fun textField(text: String, size: Int, color: Color) {
         modifier = Modifier.fillMaxWidth(),
         style = TextStyle(
             color,
-            fontSize = size.sp//,
-            //textAlign = TextAlign.Center
+            fontSize = size.sp
         )
     )
 }
@@ -150,7 +149,7 @@ fun passwordField(value: MutableState<String>, isVisible: MutableState<Boolean>,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>) {
+fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focusManager: FocusManager) {
 
     val interactionSource = remember {
         object : MutableInteractionSource {
@@ -198,6 +197,8 @@ fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>) {
                 )
             }
         },
+
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         onValueChange = { },
         shape = RoundedCornerShape(20.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
