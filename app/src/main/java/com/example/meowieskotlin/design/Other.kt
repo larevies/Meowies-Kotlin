@@ -49,6 +49,32 @@ fun logo() {
 }
 
 @Composable
+fun tinyLogo() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Top
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.paw),
+            contentDescription = "Meowies",
+            modifier = Modifier.height(25.dp)
+        )
+        Spacer(modifier = Modifier.padding(3.dp))
+        Text(
+            text = "Meowies",
+            modifier = Modifier.padding(top = 3.dp),
+            style = TextStyle(
+                fontLight,
+                fontSize = 22.sp
+            )
+        )
+    }
+}
+
+@Composable
 fun background() {
     Image(
         painter = painterResource(id = R.drawable.background_meowies),

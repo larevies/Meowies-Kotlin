@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.meowieskotlin.R
@@ -46,6 +51,7 @@ import com.example.meowieskotlin.design.passwordField
 import com.example.meowieskotlin.design.styledTextField
 import com.example.meowieskotlin.design.textField
 import com.example.meowieskotlin.design.textFieldAligned
+import com.example.meowieskotlin.design.tinyLogo
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.checkPasswordAsync
 import com.example.meowieskotlin.requests.switchEmailAsync
@@ -54,12 +60,14 @@ import com.example.meowieskotlin.requests.switchPasswordAsync
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontMedium
+import com.example.meowieskotlin.viewmodels.ChangeViewModel
 import kotlinx.coroutines.runBlocking
 
 
 @Composable
 fun Change(navController: NavController) {
 
+    val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
@@ -67,18 +75,8 @@ fun Change(navController: NavController) {
     val email = sharedPref.getString("user_email", "email").toString()
     val picture = sharedPref.getInt("user_picture", 1)
 
-    val newName = remember {
-        mutableStateOf("")
-    }
-    val newEmail = remember {
-        mutableStateOf("")
-    }
-    val oldPassword = remember {
-        mutableStateOf("")
-    }
-    val newPassword = remember {
-        mutableStateOf("")
-    }
+    val viewModel = viewModel<ChangeViewModel>()
+
     val passwordMessage = remember {
         mutableStateOf("")
     }
@@ -86,9 +84,6 @@ fun Change(navController: NavController) {
         mutableStateOf("")
     }
     val nameMessage = remember {
-        mutableStateOf("")
-    }
-    val newPasswordConfirmed = remember {
         mutableStateOf("")
     }
     val isPasswordVisibleOld = remember {
@@ -106,17 +101,17 @@ fun Change(navController: NavController) {
     val isEmailValid = remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(newPassword.value) {
-        isPasswordValid.value = newPassword.value == newPasswordConfirmed.value
-                && newPassword.value != ""
+    LaunchedEffect(viewModel.newPassword.value) {
+        isPasswordValid.value = viewModel.newPassword.value == viewModel.newPasswordConfirmed.value
+                && viewModel.newPassword.value != ""
     }
-    LaunchedEffect(newPasswordConfirmed.value) {
-        isPasswordValid.value = newPassword.value == newPasswordConfirmed.value
-                && newPassword.value != ""
+    LaunchedEffect(viewModel.newPasswordConfirmed.value) {
+        isPasswordValid.value = viewModel.newPassword.value == viewModel.newPasswordConfirmed.value
+                && viewModel.newPassword.value != ""
     }
-    LaunchedEffect(newEmail.value) {
-        if (newEmail.value != "" &&
-            !newEmail.value.matches(emailRegex.toRegex())
+    LaunchedEffect(viewModel.newEmail.value) {
+        if (viewModel.newEmail.value != "" &&
+            !viewModel.newEmail.value.matches(emailRegex.toRegex())
         ) {
             emailMessage.value = "Doesn't look like an e-mail"
             isEmailValid.value = false
@@ -142,20 +137,29 @@ fun Change(navController: NavController) {
             )
     ) {
         background()
-        logo()
-        Column(verticalArrangement = Arrangement.SpaceBetween) {
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                goBackButton(navController = navController,
+                    route = Routes.Profile.route,
+                    text = "Go back", 40.dp)
+                logo()
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                goBackButton(navController = navController,
+                    route = Routes.Profile.route,
+                    text = "Go back", 20.dp)
+                tinyLogo()
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
+        }
+        Column(modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.SpaceBetween) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                goBackButton(
-                    navController = navController,
-                    route = Routes.Profile.route,
-                    text = "Go back",
-                    size = 40.dp
-                )
-
                 Button(
                     onClick = {
                         navController.navigate(Routes.Picture.route)
@@ -174,9 +178,17 @@ fun Change(navController: NavController) {
                         contentDescription = "Profile picture"
                     )
                 }
-
             }
-            Spacer(modifier = Modifier.padding(20.dp))
+            when(configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    Spacer(modifier = Modifier.padding(20.dp))
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    Spacer(modifier = Modifier.padding(12.dp))
+                }
+                Configuration.ORIENTATION_SQUARE -> { }
+                Configuration.ORIENTATION_UNDEFINED -> { }
+            }
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
@@ -197,7 +209,7 @@ fun Change(navController: NavController) {
                     color = Color.White
                 )
                 styledTextField(
-                    value = newName, hint = "New name", focusManager = focusManager,
+                    value = viewModel.newName, hint = "New name", focusManager = focusManager,
                     image = R.drawable.id, keyboardType = KeyboardType.Text
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -205,7 +217,7 @@ fun Change(navController: NavController) {
                 button(onClick = {
                         val success = switchNameAsync(
                             email,
-                            newName.value
+                            viewModel.newName.value
                         )
                         runBlocking {
                             if (success.await()) {
@@ -226,7 +238,7 @@ fun Change(navController: NavController) {
                     color = Color.White
                 )
                 styledTextField(
-                    value = newEmail, hint = "New email", focusManager = focusManager,
+                    value = viewModel.newEmail, hint = "New email", focusManager = focusManager,
                     image = R.drawable.email, keyboardType = KeyboardType.Email
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -236,7 +248,7 @@ fun Change(navController: NavController) {
                         if (isEmailValid.value) {
                             val success = switchEmailAsync(
                                 email,
-                                newEmail.value
+                                viewModel.newEmail.value
                             )
                             runBlocking {
                                 if (success.await()) {
@@ -256,19 +268,19 @@ fun Change(navController: NavController) {
                 textField(text = "Password", size = 22, color = Color.White)
                 textField(text = "Don't worry, we don't watch", size = 20, color = Color.White)
                 passwordField(
-                    value = oldPassword,
+                    value = viewModel.oldPassword,
                     isVisible = isPasswordVisibleOld,
                     text = "Old password",
                     focusManager = focusManager
                 )
                 passwordField(
-                    value = newPassword,
+                    value = viewModel.newPassword,
                     isVisible = isPasswordVisibleNew,
                     text = "New password",
                     focusManager = focusManager
                 )
                 passwordField(
-                    value = newPasswordConfirmed,
+                    value = viewModel.newPasswordConfirmed,
                     isVisible = isPasswordVisibleConfirmed,
                     text = "Confirm new password",
                     focusManager = focusManager
@@ -278,10 +290,10 @@ fun Change(navController: NavController) {
                 button(
                     onClick = {
                         if (isPasswordValid.value) {
-                            val match = checkPasswordAsync(email, oldPassword.value)
+                            val match = checkPasswordAsync(email, viewModel.oldPassword.value)
                             runBlocking {
                                 if (match.await()) {
-                                    val change = switchPasswordAsync(email, newPassword.value)
+                                    val change = switchPasswordAsync(email, viewModel.newPassword.value)
                                     runBlocking {
                                         if (change.await()) {
                                             passwordMessage.value = "Success!"

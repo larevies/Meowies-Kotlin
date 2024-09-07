@@ -55,7 +55,6 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.0.0-alpha04")
     implementation ("androidx.compose.material3:material3:1.2.1")
     implementation ("androidx.compose.material3:material3-window-size-class:1.2.1")
-    //implementation ("androidx.compose.material3:material3-adaptive-navigation-suite:1.3.0-beta05")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
@@ -88,5 +87,7 @@ dependencies {
 
     implementation("io.ktor:ktor-client-android:2.3.12")
     implementation("io.ktor:ktor-client-websockets:2.3.12")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
 }

@@ -23,8 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -44,6 +43,7 @@ import com.example.meowieskotlin.R
 import com.example.meowieskotlin.design.background
 import com.example.meowieskotlin.design.bottomNavigation
 import com.example.meowieskotlin.design.textField
+import com.example.meowieskotlin.modules.Item
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.getActorByNameAsync
 import com.example.meowieskotlin.requests.getMovieByNameAsync
@@ -51,42 +51,26 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
+import com.example.meowieskotlin.viewmodels.SearchViewModel
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class Item (
-    val type: Int? = null,
-    val id: Int? = null,
-    val photo: String? = null,
-    val name: String,
-    val year: String? = null
-)
 
 @Composable
 fun Search(navController: NavController) {
 
-    val isSearchResultVisible = remember {
-        mutableStateOf(false)
-    }
-
-    val searchRequest = remember {
-        mutableStateOf("")
-    }
-
-    val searchResults = remember { mutableListOf<Item>() }
+    val viewModel = viewModel<SearchViewModel>()
 
     fun searchButton() {
-        if (searchRequest.value != "") {
+        if (viewModel.searchRequest != "") {
             try {
-                val successMovie = getMovieByNameAsync(searchRequest.value)
-                val successActor = getActorByNameAsync(searchRequest.value)
+                val successMovie = getMovieByNameAsync(viewModel.searchRequest)
+                val successActor = getActorByNameAsync(viewModel.searchRequest)
                 runBlocking {
-                    searchResults.clear()
+                    viewModel.searchResults.clear()
                     val movies = successMovie.await()
                     if (movies != null) {
                         for (movie in movies) {
-                            searchResults.add(Item(
+                            viewModel.addToResults(Item(
                                 type = 0,
                                 id = movie.id,
                                 photo = movie.poster,
@@ -99,7 +83,7 @@ fun Search(navController: NavController) {
                     val actors = successActor.await()
                     if (actors != null) {
                         for (actor in actors) {
-                            searchResults.add(Item(
+                            viewModel.addToResults(Item(
                                 type = 1,
                                 id = actor.id,
                                 photo = actor.photo,
@@ -110,14 +94,14 @@ fun Search(navController: NavController) {
                         }
                     }
 
-                    isSearchResultVisible.value = true
+                    viewModel.isSearchVisible = true
                 }
             } catch (e: Exception) {
-                searchRequest.value =
+                viewModel.searchRequest =
                     "Check your internet connection and try again"
             }
         } else {
-            isSearchResultVisible.value = false
+            viewModel.isSearchVisible = false
         }
     }
 
@@ -135,14 +119,15 @@ fun Search(navController: NavController) {
             )
     ) {
         background()
-        Column (modifier = Modifier.padding(horizontal = 30.dp, vertical = 40.dp),
+        Column (modifier = Modifier
+            .padding(horizontal = 30.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
             textField(text = "Search!", size = 40, color = fontLight)
             Spacer(modifier = Modifier.padding(15.dp))
 
             OutlinedTextField(
-                value = searchRequest.value,
-                onValueChange = { searchRequest.value = it },
+                value = viewModel.searchRequest,
+                onValueChange = { viewModel.searchRequest = it },
                 shape = RoundedCornerShape(20.dp),
                 label = {
                     Text(
@@ -188,67 +173,72 @@ fun Search(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (isSearchResultVisible.value) {
+            if (viewModel.isSearchVisible) {
                 Box(modifier = Modifier
                     .weight(6f)
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 15.dp)) {
-                    Column { searchResults.forEach{ item ->
-                            Row (modifier = Modifier.padding(10.dp)) {
-                                Button(onClick = {
-                                    try {
-                                        if (item.type == 0) {
-                                            navController.navigate(
-                                                Routes.Film.withArgs(item.id.toString()))
-                                        } else if (item.type == 1) {
-                                            navController.navigate(
-                                                Routes.Person.withArgs(item.id.toString()))
-                                        }
-                                    } catch (e: Exception) {
-                                        searchRequest.value =
-                                            "Check your internet connection and try again"
+                    Column { viewModel.searchResults.forEach{ item ->
+                        Row (modifier = Modifier.padding(10.dp)) {
+                            Button(onClick = {
+                                try {
+                                    if (item.type == 0) {
+                                        navController.navigate(
+                                            Routes.Film.withArgs(item.id.toString()))
+                                    } else if (item.type == 1) {
+                                        navController.navigate(
+                                            Routes.Person.withArgs(item.id.toString()))
                                     }
-                                    },
-                                    contentPadding = PaddingValues(),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent
-                                    ),
-                                    shape = RoundedCornerShape(5.dp)
-                                ) {
-                                    AsyncImage(
-                                        model = item.photo,
-                                        contentDescription = item.name,
-                                        modifier = Modifier.size(60.dp)
-                                            .clip(RoundedCornerShape(5.dp)),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Text(text = item.name,
-                                        modifier = Modifier.padding(15.dp),
-                                        style = TextStyle(
-                                            fontDark
-                                        )
-                                    )
-                                    Text(text = "·",
-                                        style = TextStyle(
-                                            fontLight
-                                        )
-                                    )
-                                    Text(text = item.year.toString(),
-                                        softWrap = false,
-                                        modifier = Modifier.padding(15.dp).weight(1f),
-                                        style = TextStyle(
-                                            fontLight
-                                        )
-                                    )
+                                } catch (e: Exception) {
+                                    viewModel.searchRequest =
+                                        "Check your internet connection and try again"
                                 }
+                            },
+                                contentPadding = PaddingValues(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent
+                                ),
+                                shape = RoundedCornerShape(5.dp)
+                            ) {
+                                AsyncImage(
+                                    model = item.photo,
+                                    contentDescription = item.name,
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(RoundedCornerShape(5.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Text(text = item.name,
+                                    modifier = Modifier.padding(15.dp),
+                                    style = TextStyle(
+                                        fontDark
+                                    )
+                                )
+                                Text(text = "·",
+                                    style = TextStyle(
+                                        fontLight
+                                    )
+                                )
+                                Text(text = item.year.toString(),
+                                    softWrap = false,
+                                    modifier = Modifier
+                                        .padding(15.dp)
+                                        .weight(1f),
+                                    style = TextStyle(
+                                        fontLight
+                                    )
+                                )
                             }
                         }
                     }
+                    }
                 }
             } else {
+                Spacer(modifier = Modifier.padding(10.dp))
                 Image(painter = painterResource(id = R.drawable.space_explorer),
                     contentDescription = "",
                     modifier = Modifier.weight(6f))
+                Spacer(modifier = Modifier.padding(10.dp))
             }
             Box(modifier = Modifier.weight(1f))
         }

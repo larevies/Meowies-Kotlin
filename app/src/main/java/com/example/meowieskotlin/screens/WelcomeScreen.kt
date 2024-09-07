@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -40,20 +44,20 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun Welcome(navController: NavController) {
 
+    val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val isSigned = sharedPref.getString("user_email", "")
+
     if (isSigned != "") {
         navController.navigate(Routes.Search.route)
     } else {
 
-        val systemUiController = rememberSystemUiController()
-        systemUiController.setSystemBarsColor(color = fontMedium)
         Surface(
             color = backgroundColor,
             modifier = Modifier
@@ -109,12 +113,22 @@ fun Welcome(navController: NavController) {
                             textAlign = TextAlign.Center
                         )
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.cats),
-                        contentDescription = "Cats!",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.weight(2.5f)
-                    )
+                    when(configuration.orientation) {
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            Image(
+                                painter = painterResource(id = R.drawable.cats),
+                                contentDescription = "Cats!",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.weight(2.5f)
+                            )
+                        }
+
+                        Configuration.ORIENTATION_LANDSCAPE -> { }
+
+                        Configuration.ORIENTATION_SQUARE -> { }
+
+                        Configuration.ORIENTATION_UNDEFINED -> { }
+                    }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,

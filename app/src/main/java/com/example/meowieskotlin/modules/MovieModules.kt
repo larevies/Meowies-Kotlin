@@ -2,6 +2,15 @@ package com.example.meowieskotlin.modules
 
 import kotlinx.serialization.Serializable
 
+@Serializable
+data class Item (
+    val type: Int? = null,
+    val id: Int? = null,
+    val photo: String? = null,
+    val name: String,
+    val year: String? = null
+)
+
 
 @Serializable
 data class Movie(

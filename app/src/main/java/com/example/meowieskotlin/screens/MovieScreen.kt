@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -49,9 +53,9 @@ import com.example.meowieskotlin.R
 import com.example.meowieskotlin.design.background
 import com.example.meowieskotlin.design.bottomNavigation
 import com.example.meowieskotlin.design.errorMessage
-import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
+import com.example.meowieskotlin.design.tinyLogo
 import com.example.meowieskotlin.events.OnLifecycleEvent
 import com.example.meowieskotlin.modules.emptyMovie
 import com.example.meowieskotlin.navigation.Routes
@@ -69,6 +73,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Film(navController: NavController, movie: String?) {
 
+    val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
@@ -124,17 +129,32 @@ fun Film(navController: NavController, movie: String?) {
             )
     ) {
         background()
-        goBackButton(navController = navController,
-            route = Routes.Search.route,
-            text = "Go back", 40.dp)
-        logo()
-        Spacer(modifier = Modifier.padding(100.dp))
-        if (isVisible.value) {
-            Column(
-                modifier = Modifier
+        var columnModifier = Modifier
+            .padding(0.dp, 10.dp, 0.dp, 0.dp)
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                logo()
+                Spacer(modifier = Modifier.padding(100.dp))
+                columnModifier = Modifier
                     .padding(0.dp, 100.dp, 0.dp, 0.dp)
                     .fillMaxSize()
-                    .verticalScroll(scrollState),
+                    .verticalScroll(scrollState)
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                tinyLogo()
+                Spacer(modifier = Modifier.padding(50.dp))
+                columnModifier = Modifier
+                    .padding(0.dp, 50.dp, 0.dp, 0.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
+        }
+
+        if (isVisible.value) {
+            Column(
+                modifier = columnModifier,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 textFieldAligned(
@@ -147,19 +167,40 @@ fun Film(navController: NavController, movie: String?) {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
-                    AsyncImage(
-                        model = film.value.poster,
-                        contentDescription = "Poster Background",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(4f / 3f)
-                            .blur(
-                                radiusX = 10.dp,
-                                radiusY = 10.dp,
-                                edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
-                            ),
-                        contentScale = ContentScale.Crop
-                    )
+                    when(configuration.orientation) {
+                        Configuration.ORIENTATION_PORTRAIT -> {
+                            AsyncImage(
+                                model = film.value.poster,
+                                contentDescription = "Poster Background",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(4f / 3f)
+                                    .blur(
+                                        radiusX = 10.dp,
+                                        radiusY = 10.dp,
+                                        edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
+                                    ),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Configuration.ORIENTATION_LANDSCAPE -> {
+                            AsyncImage(
+                                model = film.value.poster,
+                                contentDescription = "Poster Background",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(19f / 9f)
+                                    .blur(
+                                        radiusX = 10.dp,
+                                        radiusY = 10.dp,
+                                        edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
+                                    ),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Configuration.ORIENTATION_SQUARE -> { }
+                        Configuration.ORIENTATION_UNDEFINED -> { }
+                    }
                     AsyncImage(
                         model = film.value.poster,
                         contentDescription = film.value.title,

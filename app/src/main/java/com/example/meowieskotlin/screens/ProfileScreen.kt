@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +40,7 @@ import com.example.meowieskotlin.design.button
 import com.example.meowieskotlin.design.getImage
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
+import com.example.meowieskotlin.design.tinyLogo
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
@@ -46,9 +51,10 @@ import com.example.meowieskotlin.ui.theme.fontMedium
 fun Profile(navController: NavController) {
 
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
-    val name = sharedPref.getString("user_name", "Kitty").toString()
+    val name = sharedPref.getString("user_name", "").toString()
     val picture = sharedPref.getInt("user_picture", 1)
 
     Box(
@@ -65,8 +71,16 @@ fun Profile(navController: NavController) {
             )
     ) {
         background()
-
-        logo()
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                logo()
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                tinyLogo()
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
+        }
         Row (
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -124,26 +138,43 @@ fun Profile(navController: NavController) {
                 .fillMaxSize()
                 .padding(15.dp)
         ) {
-            textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
-            Spacer(modifier = Modifier.padding(15.dp))
-            textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
-            Spacer(modifier = Modifier.padding(15.dp))
-            button(onClick = {
-                navController.navigate(Routes.Change.route)
-                }, text = "Change password", background = Color.Transparent)
-            Spacer(modifier = Modifier.padding(10.dp))
-            button(onClick = {
-                navController.navigate(Routes.Change.route)
-                }, text = "Change name", background = Color.Transparent)
-            Spacer(modifier = Modifier.padding(10.dp))
-            button(onClick = {
-                navController.navigate(Routes.Change.route)
-                }, text = "Change email", background = Color.Transparent)
-            Spacer(modifier = Modifier.padding(10.dp))
-            button(onClick = { }, text = "Can't change birthday", background = Color.Transparent)
-            Spacer(modifier = Modifier.padding(15.dp))
-            Image(painter = painterResource(id = R.drawable.pet), contentDescription = "Kitty",
-                modifier = Modifier.height(100.dp))
+
+            when(configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
+                    Spacer(modifier = Modifier.padding(15.dp))
+                    textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
+                    Spacer(modifier = Modifier.padding(15.dp))
+                    button(onClick = {
+                        navController.navigate(Routes.Change.route)
+                    }, text = "Change password", background = Color.Transparent)
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    button(onClick = {
+                        navController.navigate(Routes.Change.route)
+                    }, text = "Change name", background = Color.Transparent)
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    button(onClick = {
+                        navController.navigate(Routes.Change.route)
+                    }, text = "Change email", background = Color.Transparent)
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    button(onClick = { }, text = "Can't change birthday", background = Color.Transparent)
+                    Spacer(modifier = Modifier.padding(15.dp))
+                    Image(painter = painterResource(id = R.drawable.pet), contentDescription = "Kitty",
+                        modifier = Modifier.height(100.dp))
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
+                    Spacer(modifier = Modifier.padding(15.dp))
+                    textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
+                    Spacer(modifier = Modifier.padding(15.dp))
+                    button(onClick = {
+                        navController.navigate(Routes.Change.route)
+                    }, text = "Change my profile", background = Color.Transparent)
+                }
+                Configuration.ORIENTATION_SQUARE -> { }
+                Configuration.ORIENTATION_UNDEFINED -> { }
+            }
+
         }
         bottomNavigation(navController = navController)
     }

@@ -54,11 +54,13 @@ fun styledCheckBox(checked: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun styledDatePicker(datePickerState: DatePickerState){
+fun styledDatePicker(datePickerState: DatePickerState, modifier: Modifier){
     DatePicker(
+        modifier = modifier,
         state = datePickerState,
         showModeToggle = false,
         title = null,
+        headline = null,
         colors = DatePickerColors(
             containerColor = fontLight,
             titleContentColor = fontMedium,

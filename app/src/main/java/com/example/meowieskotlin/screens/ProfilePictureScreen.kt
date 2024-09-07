@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -25,9 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -38,6 +43,7 @@ import com.example.meowieskotlin.design.button
 import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
+import com.example.meowieskotlin.design.tinyLogo
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.switchPictureAsync
 import com.example.meowieskotlin.ui.theme.backgroundLight
@@ -49,9 +55,14 @@ import kotlinx.coroutines.runBlocking
 fun ProfilePicture(navController: NavController) {
 
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+    val configuration = LocalConfiguration.current
 
+    val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val email = sharedPref.getString("user_email", "email").toString()
+
+    val text = remember {
+        mutableStateOf("Pick this kitty!")
+    }
 
     val kitties = listOf(
         R.drawable.icon1,
@@ -86,37 +97,79 @@ fun ProfilePicture(navController: NavController) {
             )
     ) {
         background()
-        goBackButton(navController = navController,
-            route = Routes.Profile.route,
-            text = "Go back", 40.dp)
-        logo()
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center) {
-
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                goBackButton(navController = navController,
+                    route = Routes.Profile.route,
+                    text = "Go back", 40.dp)
+                logo()
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                goBackButton(navController = navController,
+                    route = Routes.Profile.route,
+                    text = "Go back", 20.dp)
+                tinyLogo()
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
         }
+
         Column (horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.padding(50.dp))
-            textFieldAligned(text = "Pick any!", size = 40, color = Color.White)
+            when(configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> {
+                    Spacer(modifier = Modifier.padding(50.dp))
+                    textFieldAligned(text = "Pick any!", size = 40, color = Color.White)
+                }
+                Configuration.ORIENTATION_LANDSCAPE -> { }
+                Configuration.ORIENTATION_SQUARE -> { }
+                Configuration.ORIENTATION_UNDEFINED -> { }
+            }
             Spacer(modifier = Modifier.padding(20.dp))
-            CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
-                HorizontalPager(
-                    state = pagerState,
-                    contentPadding = PaddingValues(40.dp),
-                    pageSpacing = 10.dp,
-                    beyondBoundsPageCount = 1
-                ) {
-                        index ->
-                    kitties.getOrNull(
-                        index % (kitties.size)
-                    )?.let { kitty ->
-                        KittyBox(kitty)
+            Box{
+                when(configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        CompositionLocalProvider(
+                            LocalOverscrollConfiguration provides null
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
+                                contentPadding = PaddingValues(40.dp),
+                                pageSpacing = 10.dp,
+                                beyondBoundsPageCount = 1
+                            ) { index ->
+                                kitties.getOrNull(
+                                    index % (kitties.size)
+                                )?.let { kitty ->
+                                    KittyBox(kitty, 280.dp)
+                                }
+                            }
+                        }
                     }
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        CompositionLocalProvider(
+                            LocalOverscrollConfiguration provides null
+                        ) {
+                            HorizontalPager(
+                                state = pagerState,
+                                contentPadding = PaddingValues(40.dp),
+                                pageSpacing = 10.dp,
+                                beyondBoundsPageCount = 1
+                            ) { index ->
+                                kitties.getOrNull(
+                                    index % (kitties.size)
+                                )?.let { kitty ->
+                                    KittyBox(kitty, 100.dp)
+                                }
+                            }
+                        }
+                    }
+                    Configuration.ORIENTATION_SQUARE -> { }
+                    Configuration.ORIENTATION_UNDEFINED -> { }
                 }
             }
-            val text = remember {
-                mutableStateOf("")
-            }
-            Box(modifier = Modifier.padding(30.dp)) {
+
+
+            Box(modifier = Modifier.padding(10.dp)) {
                 button(
                     onClick = {
                         try {
@@ -139,11 +192,10 @@ fun ProfilePicture(navController: NavController) {
                             text.value = "Internal error"
                         }
                     },
-                    text = "Pick this kitty!",
+                    text = text.value,
                     background = fontMedium
                 )
             }
-            textFieldAligned(text = text.value, size = 20, color = Color.White)
             bottomNavigation(navController = navController)
         }
     }
@@ -159,12 +211,12 @@ fun ProfilePicture(navController: NavController) {
 }
 
 @Composable
-fun KittyBox(kitty: Int) {
+fun KittyBox(kitty: Int, size: Dp) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Image(painter = painterResource(id = kitty),
             contentDescription = "Kitty",
             contentScale = ContentScale.Fit,
-            modifier = Modifier.size(280.dp)
+            modifier = Modifier.size(size)
         )
     }
 }

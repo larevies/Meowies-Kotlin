@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -43,9 +47,9 @@ import coil.compose.AsyncImage
 import com.example.meowieskotlin.R
 import com.example.meowieskotlin.design.background
 import com.example.meowieskotlin.design.bottomNavigation
-import com.example.meowieskotlin.design.goBackButton
 import com.example.meowieskotlin.design.logo
 import com.example.meowieskotlin.design.textFieldAligned
+import com.example.meowieskotlin.design.tinyLogo
 import com.example.meowieskotlin.modules.emptyActor
 import com.example.meowieskotlin.navigation.Routes
 import com.example.meowieskotlin.requests.getActorByIdAsync
@@ -58,6 +62,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun Person(navController: NavController, id: String?) {
 
+    val configuration = LocalConfiguration.current
     val actor = remember {
         mutableStateOf(emptyActor)
     }
@@ -83,18 +88,30 @@ fun Person(navController: NavController, id: String?) {
             )
     ) {
         background()
-        goBackButton(
-            navController = navController,
-            route = Routes.Search.route,
-            text = "Go back", 40.dp
-        )
-        logo()
-        Spacer(modifier = Modifier.padding(100.dp))
+        var columnModifier = Modifier
+            .padding(0.dp, 10.dp, 0.dp, 0.dp)
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                logo()
+                Spacer(modifier = Modifier.padding(100.dp))
+                columnModifier = Modifier
+                    .padding(0.dp, 100.dp, 0.dp, 0.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                tinyLogo()
+                Spacer(modifier = Modifier.padding(50.dp))
+                columnModifier = Modifier
+                    .padding(0.dp, 50.dp, 0.dp, 0.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
+        }
         Column(
-            modifier = Modifier
-                .padding(0.dp, 100.dp, 0.dp, 0.dp)
-                .fillMaxSize()
-                .verticalScroll(scrollState),
+            modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             textFieldAligned(
@@ -107,19 +124,40 @@ fun Person(navController: NavController, id: String?) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.padding(vertical = 10.dp)
             ) {
-                AsyncImage(
-                    model = actor.value.photo,
-                    contentDescription = "Poster Background",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3f)
-                        .blur(
-                            radiusX = 10.dp,
-                            radiusY = 10.dp,
-                            edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
-                        ),
-                    contentScale = ContentScale.Crop
-                )
+                when(configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT -> {
+                        AsyncImage(
+                            model = actor.value.photo,
+                            contentDescription = "Actor Background",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(4f / 3f)
+                                .blur(
+                                    radiusX = 10.dp,
+                                    radiusY = 10.dp,
+                                    edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
+                                ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        AsyncImage(
+                            model = actor.value.photo,
+                            contentDescription = "Actor Background",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(19f / 9f)
+                                .blur(
+                                    radiusX = 10.dp,
+                                    radiusY = 10.dp,
+                                    edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(5.dp))
+                                ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    Configuration.ORIENTATION_SQUARE -> { }
+                    Configuration.ORIENTATION_UNDEFINED -> { }
+                }
                 AsyncImage(
                     model = actor.value.photo,
                     contentDescription = actor.value.name,

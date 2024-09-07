@@ -65,15 +65,7 @@ fun textField(text: String, size: Int, color: Color) {
 }
 
 @Composable
-fun textFieldOneIcon(text: String, value: MutableState<String>, hint: String, focusManager: FocusManager, image: Int, keyboardType: KeyboardType) {
-    Text(
-        text = text,
-        modifier = Modifier.fillMaxWidth(),
-        style = TextStyle(
-            fontLight,
-            fontSize = 23.sp
-        )
-    )
+fun textFieldOneIcon(value: MutableState<String>, hint: String, focusManager: FocusManager, image: Int, keyboardType: KeyboardType) {
     Spacer(modifier = Modifier.padding(10.dp))
     styledTextField(value = value, hint = hint, focusManager = focusManager, image = image, keyboardType = keyboardType)
 }
