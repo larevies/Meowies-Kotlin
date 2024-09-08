@@ -1,6 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.meowieskotlin.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -63,6 +67,7 @@ val speech = """
 @Composable
 fun Bookmarks(navController: NavController) {
 
+    val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val id = sharedPref.getInt("user_id", 1)
@@ -85,20 +90,55 @@ fun Bookmarks(navController: NavController) {
     val i = remember {
         mutableStateOf(0)
     }
-    runBlocking {
-        val job = getAllBookmarksAsync(id)
-        if (i.value == 0) {
-            val result = job.await()
-            if (result != null) {
-                for (res in result) {
-                    bookmarks.add(res)
-                    val movie = getMovieByIdAsync(res.movieId.toString())
-                    movies.add(movie.await()!!)
-                }
-                i.value++
-            }
-        }
 
+
+    // TODO
+
+   /* OnLifecycleEvent { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> {
+                try {
+                    runBlocking {
+                        val job = getAllBookmarksAsync(id)
+                        if (i.value == 0) {
+                            val result = job.await()
+                            if (result != null) {
+                                for (res in result) {
+                                    bookmarks.add(res)
+                                    val movie = getMovieByIdAsync(res.movieId.toString())
+                                    movies.add(movie.await()!!)
+                                }
+                                i.value++
+                            }
+                        }
+
+                    }
+                } catch (e: Exception) {
+                    print(e.message)
+                }
+            }
+            else -> {}
+        }
+    }*/
+
+    try {
+        runBlocking {
+            val job = getAllBookmarksAsync(id)
+            if (i.value == 0) {
+                val result = job.await()
+                if (result != null) {
+                    for (res in result) {
+                        bookmarks.add(res)
+                        val movie = getMovieByIdAsync(res.movieId.toString())
+                        movies.add(movie.await()!!)
+                    }
+                    i.value++
+                }
+            }
+
+        }
+    } catch (e: Exception) {
+        print(e.message)
     }
 
     Box(
@@ -115,11 +155,28 @@ fun Bookmarks(navController: NavController) {
             )
     ) {
         background()
-        logo()
-        Column (modifier = Modifier.padding(30.dp, 100.dp, 30.dp, 40.dp),
+        var columnModifier = Modifier.padding(30.dp)
+        var smallSpacerModifier = Modifier.padding(30.dp)
+        var spacerModifier = Modifier.padding(70.dp)
+        when(configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                columnModifier = Modifier.padding(30.dp, 100.dp, 30.dp, 40.dp)
+                smallSpacerModifier = Modifier.padding(15.dp)
+                spacerModifier = Modifier.padding(70.dp)
+                logo()
+            }
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                columnModifier = Modifier.padding(30.dp, 25.dp, 30.dp, 0.dp)
+                smallSpacerModifier = Modifier.padding(0.dp)
+                spacerModifier = Modifier.padding(20.dp)
+            }
+            Configuration.ORIENTATION_SQUARE -> { }
+            Configuration.ORIENTATION_UNDEFINED -> { }
+        }
+        Column (modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally) {
             textFieldAligned(text = "Bookmarks!", size = 40, color = fontLight)
-            Spacer(modifier = Modifier.padding(15.dp))
+            Spacer(modifier = smallSpacerModifier)
             if (bookmarkPresence.value) {
                 Box(modifier = Modifier
                     .weight(6f)
@@ -182,7 +239,7 @@ fun Bookmarks(navController: NavController) {
                             Image(painter = painterResource(id = R.drawable.mermaid),
                                 contentDescription = "Mermaid cat")
                         }
-                        Spacer(modifier = Modifier.padding(70.dp))
+                        Spacer(modifier = spacerModifier)
                     }
                 }
             } else {
