@@ -4,6 +4,7 @@ package com.example.meowieskotlin.screens
 
 import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +62,19 @@ fun SignIn(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
+    val greeting = context.getString(R.string.greeting)
+    val logIn = context.getString(R.string.log_in)
+    val email = context.getString(R.string.email)
+    val password = context.getString(R.string.password)
+    val redirecting = context.getString(R.string.redirecting)
+    val wrongCredentials = context.getString(R.string.wrong_credentials)
+    val pleaseFill = context.getString(R.string.please_fill)
+    val wrongEmail = context.getString(R.string.wrong_email)
+    val missingPassword = context.getString(R.string.missing_password)
+    val internetConnection = context.getString(R.string.internet_connection)
+
+
     val focusManager = LocalFocusManager.current
 
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
@@ -76,10 +90,6 @@ fun SignIn(navController: NavController) {
 
     val message = remember {
         mutableStateOf("")
-    }
-
-    val buttonText = remember {
-        mutableStateOf("Log in")
     }
 
     val isEmailValid = remember {
@@ -98,7 +108,7 @@ fun SignIn(navController: NavController) {
         if (viewModel.email.value != "" &&
             !viewModel.email.value.matches(emailRegex.toRegex())
         ) {
-            message.value = "Doesn't look like an e-mail"
+            message.value = wrongEmail
             isEmailValid.value = false
         } else {
             message.value = ""
@@ -151,12 +161,12 @@ fun SignIn(navController: NavController) {
                 when(configuration.orientation) {
                     Configuration.ORIENTATION_PORTRAIT -> {
                         textFieldAligned(
-                            text = "Happy to see you again!",
+                            text = greeting,
                             size = 44, color = Color.White
                         )
                         Spacer(modifier = Modifier.height(30.dp))
                         Text(
-                            text = "Please, fill in the following:",
+                            text = pleaseFill,
                             modifier = Modifier.fillMaxWidth(),
                             style = TextStyle(
                                 fontLight,
@@ -172,7 +182,7 @@ fun SignIn(navController: NavController) {
                 }
                 textFieldOneIcon(
                     value = viewModel.email,
-                    hint = "E-mail",
+                    hint = email,
                     focusManager = focusManager,
                     image = R.drawable.email,
                     keyboardType = KeyboardType.Email
@@ -181,17 +191,18 @@ fun SignIn(navController: NavController) {
                 passwordField(
                     value = viewModel.password,
                     isVisible = isPasswordVisible,
-                    text = "Password",
+                    text = password,
                     focusManager = focusManager
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
                 button(
                     onClick = {
                         if (!isEmailValid.value) {
-                            errorMessage.value = "E-mail is invalid"
+                            errorMessage.value = wrongEmail
                         } else if (!isPasswordValid.value) {
-                            errorMessage.value = "Passwords do not match"
+                            errorMessage.value = missingPassword
                         } else {
+                            errorMessage.value = ""
                             try {
                                 val user = authorizeAsync(viewModel.email.value,
                                     viewModel.password.value)
@@ -209,17 +220,18 @@ fun SignIn(navController: NavController) {
                                         navController.navigate(Routes.Profile.route)
 
 
-                                        buttonText.value = "Redirecting"
+                                        errorMessage.value = redirecting
                                     } else {
-                                        errorMessage.value = "Wrong credentials"
+                                        errorMessage.value = wrongCredentials
                                     }
                                 }
                             } catch (e: Exception) {
-                                buttonText.value = "Internal error. App will be closed soon"
+                                Toast.makeText(context, internetConnection,
+                                    Toast.LENGTH_SHORT).show()
                             }
                         }
                     },
-                    text = buttonText.value,
+                    text = logIn,
                     background = fontMedium)
                 errorMessage(
                     message = errorMessage

@@ -142,7 +142,7 @@ fun passwordField(value: MutableState<String>, isVisible: MutableState<Boolean>,
 }
 
 @Composable
-fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focusManager: FocusManager) {
+fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focusManager: FocusManager, text: String) {
 
     val interactionSource = remember {
         object : MutableInteractionSource {
@@ -170,7 +170,7 @@ fun dateField(selectedDate: String, showDatePicker: MutableState<Boolean>, focus
             .fillMaxWidth(),
         label = {
             Text(
-                text = "Birthday",
+                text = text,
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
             )

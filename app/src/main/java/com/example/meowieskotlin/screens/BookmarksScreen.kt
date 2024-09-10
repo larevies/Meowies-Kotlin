@@ -57,18 +57,15 @@ import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
 import kotlinx.coroutines.runBlocking
 
-
-val speech = """
-    All the movies you add to bookmarks will appear on this page. 
-    
-    It's empty for now.
-""".trimIndent()
-
 @Composable
 fun Bookmarks(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
+    val speech = context.getString(R.string.speech)
+    val bookmarksString = context.getString(R.string.bookmarks)
+
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val id = sharedPref.getInt("user_id", 1)
 
@@ -175,7 +172,7 @@ fun Bookmarks(navController: NavController) {
         }
         Column (modifier = columnModifier,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            textFieldAligned(text = "Bookmarks!", size = 40, color = fontLight)
+            textFieldAligned(text = bookmarksString, size = 40, color = fontLight)
             Spacer(modifier = smallSpacerModifier)
             if (bookmarkPresence.value) {
                 Box(modifier = Modifier

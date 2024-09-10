@@ -19,13 +19,17 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -44,12 +48,19 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
+import java.util.Locale
 
 @Composable
 fun Welcome(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
+    val welcome = context.getString(R.string.welcome)
+    val meowies = context.getString(R.string.app_name)
+    val description = context.getString(R.string.description)
+    val signIn = context.getString(R.string.sign_in)
+    val signUp = context.getString(R.string.sign_up)
 
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val isSigned = sharedPref.getString("user_email", "")
@@ -76,11 +87,70 @@ fun Welcome(navController: NavController) {
                             ),
                     )
             ) {
+                val isExpanded = remember {
+                    mutableStateOf(false)
+                }
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopStart
+                ) {
+
+                    Button(
+                        modifier = Modifier.padding(15.dp),
+                        contentPadding = PaddingValues(),
+                        shape = RectangleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        onClick = {
+                            isExpanded.value = !isExpanded.value
+                        }
+                    ) {
+                        Image(painter = painterResource(id = R.drawable.language),
+                            contentDescription = "Change language")
+                    }
+                    DropdownMenu(
+                        expanded = isExpanded.value,
+                        onDismissRequest = { isExpanded.value = !isExpanded.value},
+                        modifier = Modifier.background(fontLight).padding(15.dp)
+                    ) {
+                        Button(
+                            contentPadding = PaddingValues(),
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            onClick = {
+                                configuration.setLocale(Locale("en"))
+                            }) {
+                            Image(painter = painterResource(id = R.drawable.english),
+                                contentDescription = "English language")
+                            Text(text = "English", style = TextStyle(fontDark, fontSize = 20.sp),
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        }
+                        Button(
+                            contentPadding = PaddingValues(),
+                            shape = RectangleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent
+                            ),
+                            onClick = {
+                                configuration.setLocale(Locale("ru"))
+                            }) {
+                            Image(painter = painterResource(id = R.drawable.russian),
+                                contentDescription = "Russian language")
+                            Text(text = "Русский", style = TextStyle(fontDark, fontSize = 20.sp),
+                                modifier = Modifier.padding(5.dp))
+                        }
+                    }
+                }
+
                 Column(
                     modifier = Modifier.padding(30.dp)
                 ) {
                     Text(
-                        text = "Welcome to",
+                        text = welcome,
                         modifier = Modifier
                             .fillMaxWidth(),
                         style = TextStyle(
@@ -90,7 +160,7 @@ fun Welcome(navController: NavController) {
                         )
                     )
                     Text(
-                        text = "Meowies!",
+                        text = meowies,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.5f),
@@ -102,8 +172,7 @@ fun Welcome(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Text(
-                        text = "The best platform ever for saving every " +
-                                "movie you'd like to watch!",
+                        text = description,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1.0f),
@@ -159,7 +228,7 @@ fun Welcome(navController: NavController) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "Sign in",
+                                    text = signIn,
                                     style = TextStyle(
                                         fontMedium,
                                         fontSize = 18.sp
@@ -190,7 +259,7 @@ fun Welcome(navController: NavController) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "Sign up",
+                                    text = signUp,
                                     style = TextStyle(
                                         fontLight,
                                         fontSize = 18.sp
@@ -204,7 +273,6 @@ fun Welcome(navController: NavController) {
         }
     }
 }
-
 
 @Preview
 @Composable

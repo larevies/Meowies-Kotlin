@@ -75,6 +75,13 @@ fun Film(navController: NavController, movie: String?) {
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
+    val productionYear = context.getString(R.string.production_year)
+    val ageRating = context.getString(R.string.age_rating)
+    val rating = context.getString(R.string.rating)
+    val votes = context.getString(R.string.votes)
+    val actors = context.getString(R.string.actors)
+
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
     val id = sharedPref.getInt("user_id", 1)
@@ -291,7 +298,7 @@ fun Film(navController: NavController, movie: String?) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Production year: ",
+                            text = productionYear,
                             style = TextStyle(Color.White), fontSize = 22.sp
                         )
                         Text(
@@ -309,7 +316,7 @@ fun Film(navController: NavController, movie: String?) {
                     ) {
 
                         Text(
-                            text = "Age Rating: ",
+                            text = ageRating,
                             style = TextStyle(Color.White), fontSize = 22.sp
                         )
                         Text(
@@ -327,7 +334,7 @@ fun Film(navController: NavController, movie: String?) {
                     ) {
 
                         Text(
-                            text = "Rating: ",
+                            text = rating,
                             style = TextStyle(Color.White), fontSize = 22.sp
                         )
                         Text(
@@ -339,7 +346,7 @@ fun Film(navController: NavController, movie: String?) {
                             contentDescription = "Star", modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = "   (${film.value.votes.toString()} votes)",
+                            text = "   (${film.value.votes.toString()} $votes)",
                             style = TextStyle(fontDark), fontSize = 15.sp
                         )
                     }
@@ -355,7 +362,7 @@ fun Film(navController: NavController, movie: String?) {
                     )
 
                     Text(
-                        text = "Actors", modifier = Modifier.padding(vertical = 20.dp),
+                        text = actors, modifier = Modifier.padding(vertical = 20.dp),
                         style = TextStyle(fontDark, fontSize = 22.sp, textAlign = TextAlign.Justify)
                     )
 

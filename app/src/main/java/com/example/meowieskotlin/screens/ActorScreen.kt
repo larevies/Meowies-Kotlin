@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -63,6 +64,14 @@ import kotlinx.coroutines.runBlocking
 fun Person(navController: NavController, id: String?) {
 
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
+
+    val birthday = context.getString(R.string.birthday)
+    val bornIn = context.getString(R.string.born_in)
+    val deathDay = context.getString(R.string.death_day)
+    val movies = context.getString(R.string.movies)
+    val facts = context.getString(R.string.facts)
+
     val actor = remember {
         mutableStateOf(emptyActor)
     }
@@ -183,7 +192,7 @@ fun Person(navController: NavController, id: String?) {
                     .padding(vertical = 5.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically){
-                    Text(text = "Birthday: ",
+                    Text(text = "$birthday: ",
                         style = TextStyle(Color.White), fontSize = 22.sp)
                     Text(text = actor.value.birthday.toString(),
                         style = TextStyle(fontDark), fontSize = 22.sp)
@@ -194,7 +203,7 @@ fun Person(navController: NavController, id: String?) {
                     .padding(vertical = 5.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically){
-                    Text(text = "Born in: ",
+                    Text(text = bornIn,
                         style = TextStyle(Color.White), fontSize = 22.sp)
                     Text(text = actor.value.placeOfBirth.toString(),
                         style = TextStyle(fontDark), fontSize = 22.sp)
@@ -206,7 +215,7 @@ fun Person(navController: NavController, id: String?) {
                         .padding(vertical = 5.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically){
-                        Text(text = "Day of death: ",
+                        Text(text = deathDay,
                             style = TextStyle(Color.White), fontSize = 22.sp)
                         Text(text = actor.value.death.toString(),
                             style = TextStyle(fontDark), fontSize = 22.sp)
@@ -219,7 +228,7 @@ fun Person(navController: NavController, id: String?) {
                 )
 
                 Text(
-                    text = "Movies", modifier = Modifier.padding(vertical = 20.dp),
+                    text = movies, modifier = Modifier.padding(vertical = 20.dp),
                     style = TextStyle(fontDark, fontSize = 22.sp, textAlign = TextAlign.Justify)
                 )
 
@@ -250,7 +259,7 @@ fun Person(navController: NavController, id: String?) {
                 }
 
                 Text(
-                    text = "Facts", modifier = Modifier.padding(vertical = 20.dp),
+                    text = facts, modifier = Modifier.padding(vertical = 20.dp),
                     style = TextStyle(fontDark, fontSize = 24.sp, textAlign = TextAlign.Justify)
                 )
 

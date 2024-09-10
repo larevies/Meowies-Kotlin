@@ -4,6 +4,7 @@ package com.example.meowieskotlin.screens
 
 import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -57,11 +58,16 @@ fun ProfilePicture(navController: NavController) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
+    val pickKitty = context.getString(R.string.pick_kitty)
+    val pickAny = context.getString(R.string.pick_any)
+    val gotcha = context.getString(R.string.gotcha)
+    val internetConnection = context.getString(R.string.internet_connection)
+
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val email = sharedPref.getString("user_email", "email").toString()
 
     val text = remember {
-        mutableStateOf("Pick this kitty!")
+        mutableStateOf(pickKitty)
     }
 
     val kitties = listOf(
@@ -118,7 +124,7 @@ fun ProfilePicture(navController: NavController) {
             when(configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
                     Spacer(modifier = Modifier.padding(50.dp))
-                    textFieldAligned(text = "Pick any!", size = 40, color = Color.White)
+                    textFieldAligned(text = pickAny, size = 40, color = Color.White)
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> { }
                 Configuration.ORIENTATION_SQUARE -> { }
@@ -183,13 +189,13 @@ fun ProfilePicture(navController: NavController) {
                             )
                             runBlocking {
                                 if (success.await()) {
-                                    text.value = "Gotcha!"
+                                    text.value = gotcha
                                 } else {
-                                    text.value = "Some error occurred."
+                                    Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT).show()
                                 }
                             }
                         } catch (e: Exception) {
-                            text.value = "Internal error"
+                            Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT).show()
                         }
                     },
                     text = text.value,

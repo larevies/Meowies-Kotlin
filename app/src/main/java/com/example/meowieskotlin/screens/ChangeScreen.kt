@@ -4,6 +4,7 @@ package com.example.meowieskotlin.screens
 
 import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +70,32 @@ fun Change(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
+
+    val changeName = context.getString(R.string.change_name)
+    val changeEmail = context.getString(R.string.change_email)
+    val changePassword = context.getString(R.string.change_password)
+    val newEmail = context.getString(R.string.new_email)
+    val currentName = context.getString(R.string.current_name)
+    val changeDescription = context.getString(R.string.change_description)
+    val emailString = context.getString(R.string.email)
+    val password = context.getString(R.string.password)
+    val nameString = context.getString(R.string.name)
+    val wrongEmail = context.getString(R.string.wrong_email)
+    val newName = context.getString(R.string.new_name)
+    val successString = context.getString(R.string.success)
+    val currentEmail = context.getString(R.string.current_email)
+    val doNotWatch = context.getString(R.string.do_not_watch)
+    val newPassword = context.getString(R.string.new_password)
+    val confirmNewPassword = context.getString(R.string.confirm_new_password)
+    val oldPassword = context.getString(R.string.old_password)
+    val passwordMatchOld = context.getString(R.string.matching_passwords_old)
+    val passwordMatch = context.getString(R.string.matching_passwords)
+    val celebration = context.getString(R.string.celebration)
+    val almostForgot = context.getString(R.string.almost_forgot)
+    val internetConnection = context.getString(R.string.internet_connection)
+
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
+    val editor = sharedPref.edit()
 
     val name = sharedPref.getString("user_name", "Kitty").toString()
     val email = sharedPref.getString("user_email", "email").toString()
@@ -113,7 +139,7 @@ fun Change(navController: NavController) {
         if (viewModel.newEmail.value != "" &&
             !viewModel.newEmail.value.matches(emailRegex.toRegex())
         ) {
-            emailMessage.value = "Doesn't look like an e-mail"
+            emailMessage.value = wrongEmail
             isEmailValid.value = false
         } else {
             emailMessage.value = ""
@@ -197,19 +223,19 @@ fun Change(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 textFieldAligned(
-                    text = "Here you can change your profile.",
+                    text = changeDescription,
                     size = 30,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.padding(15.dp))
-                textField(text = "Name", size = 22, color = Color.White)
+                textField(text = nameString, size = 22, color = Color.White)
                 textField(
-                    text = "Your current name: $name",
+                    text = "$currentName: $name",
                     size = 20,
                     color = Color.White
                 )
                 styledTextField(
-                    value = viewModel.newName, hint = "New name", focusManager = focusManager,
+                    value = viewModel.newName, hint = newName, focusManager = focusManager,
                     image = R.drawable.id, keyboardType = KeyboardType.Text
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -221,24 +247,26 @@ fun Change(navController: NavController) {
                         )
                         runBlocking {
                             if (success.await()) {
-                                nameMessage.value = "Success!"
+                                nameMessage.value = successString
+                                editor.apply { putString("user_name", viewModel.newName.value ) }
+                                editor.apply()
                             } else {
-                                nameMessage.value = "Something went wrong."
+                                Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT).show()
                             }
                         }
                     },
-                    text = "Change my name",
+                    text = changeName,
                     background = fontMedium
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
-                textField(text = "Email", size = 22, color = Color.White)
+                textField(text = emailString, size = 22, color = Color.White)
                 textField(
-                    text = "Your current email: $email",
+                    text = "$currentEmail: $email",
                     size = 20,
                     color = Color.White
                 )
                 styledTextField(
-                    value = viewModel.newEmail, hint = "New email", focusManager = focusManager,
+                    value = viewModel.newEmail, hint = newEmail, focusManager = focusManager,
                     image = R.drawable.email, keyboardType = KeyboardType.Email
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -252,37 +280,39 @@ fun Change(navController: NavController) {
                             )
                             runBlocking {
                                 if (success.await()) {
-                                    emailMessage.value = "Success!"
+                                    emailMessage.value = successString
+                                    editor.apply { putString("user_email", viewModel.newEmail.value ) }
+                                    editor.apply()
                                 } else {
-                                    emailMessage.value = "Something went wrong."
+                                    Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT)
                                 }
                             }
                         } else {
-                            emailMessage.value = "E-mail is invalid."
+                            emailMessage.value = wrongEmail
                         }
                     },
-                    text = "Change my email",
+                    text = changeEmail,
                     background = fontMedium
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
-                textField(text = "Password", size = 22, color = Color.White)
-                textField(text = "Don't worry, we don't watch", size = 20, color = Color.White)
+                textField(text = password, size = 22, color = Color.White)
+                textField(text = doNotWatch, size = 20, color = Color.White)
                 passwordField(
                     value = viewModel.oldPassword,
                     isVisible = isPasswordVisibleOld,
-                    text = "Old password",
+                    text = oldPassword,
                     focusManager = focusManager
                 )
                 passwordField(
                     value = viewModel.newPassword,
                     isVisible = isPasswordVisibleNew,
-                    text = "New password",
+                    text = newPassword,
                     focusManager = focusManager
                 )
                 passwordField(
                     value = viewModel.newPasswordConfirmed,
                     isVisible = isPasswordVisibleConfirmed,
-                    text = "Confirm new password",
+                    text = confirmNewPassword,
                     focusManager = focusManager
                 )
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -296,31 +326,31 @@ fun Change(navController: NavController) {
                                     val change = switchPasswordAsync(email, viewModel.newPassword.value)
                                     runBlocking {
                                         if (change.await()) {
-                                            passwordMessage.value = "Success!"
+                                            passwordMessage.value = successString
                                         } else {
-                                            passwordMessage.value = "Something went wrong."
+                                            Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT)
                                         }
                                     }
                                 } else {
-                                    passwordMessage.value = "Old password didn't match."
+                                    passwordMessage.value = passwordMatchOld
                                 }
                             }
                         } else {
-                            passwordMessage.value = "Passwords do not match"
+                            passwordMessage.value = passwordMatch
                         }
                     },
-                    text = "Change my password",
+                    text = changePassword,
                     background = fontMedium
                 )
                 Spacer(modifier = Modifier.padding(30.dp))
                 textField(
-                    text = "You can't change your birthday. We will celebrate it with you!",
+                    text = celebration,
                     size = 20,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
                 textField(
-                    text = "Almost forgot to tell you. You can also change your cat profile icon by clicking on it! Enjoy!",
+                    text = almostForgot,
                     size = 20,
                     color = Color.White
                 )

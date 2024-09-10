@@ -1,5 +1,6 @@
 package com.example.meowieskotlin.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -59,6 +61,10 @@ import kotlinx.coroutines.runBlocking
 fun Search(navController: NavController) {
 
     val viewModel = viewModel<SearchViewModel>()
+    val context = LocalContext.current
+    val search = context.getString(R.string.search)
+    val searchText = context.getString(R.string.search_text)
+    val internetConnection = context.getString(R.string.internet_connection)
 
     fun searchButton() {
         if (viewModel.searchRequest != "") {
@@ -97,8 +103,7 @@ fun Search(navController: NavController) {
                     viewModel.isSearchVisible = true
                 }
             } catch (e: Exception) {
-                viewModel.searchRequest =
-                    "Check your internet connection and try again"
+                Toast.makeText(context, internetConnection, Toast.LENGTH_SHORT).show()
             }
         } else {
             viewModel.isSearchVisible = false
@@ -122,7 +127,7 @@ fun Search(navController: NavController) {
         Column (modifier = Modifier
             .padding(horizontal = 30.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            textField(text = "Search!", size = 40, color = fontLight)
+            textField(text = search, size = 40, color = fontLight)
             Spacer(modifier = Modifier.padding(15.dp))
 
             OutlinedTextField(
@@ -131,7 +136,7 @@ fun Search(navController: NavController) {
                 shape = RoundedCornerShape(20.dp),
                 label = {
                     Text(
-                        text = "movie, actor, etc"
+                        text = searchText
                     )
                 },
 
@@ -165,7 +170,7 @@ fun Search(navController: NavController) {
                     ) {
                         Image (
                             painter = painterResource(id = R.drawable.search),
-                            contentDescription = "movie, actor, etc",
+                            contentDescription = searchText,
                             modifier = Modifier.height(20.dp)
                         )
                     }
@@ -190,8 +195,8 @@ fun Search(navController: NavController) {
                                             Routes.Person.withArgs(item.id.toString()))
                                     }
                                 } catch (e: Exception) {
-                                    viewModel.searchRequest =
-                                        "Check your internet connection and try again"
+                                    Toast.makeText(context, internetConnection,
+                                        Toast.LENGTH_SHORT).show()
                                 }
                             },
                                 contentPadding = PaddingValues(),

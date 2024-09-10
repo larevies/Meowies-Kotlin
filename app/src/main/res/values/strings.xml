@@ -1,3 +1,74 @@
 <resources>
     <string name="app_name">Meowies</string>
+    <string name="greeting">Happy to see you again!</string>
+    <string name="welcome">Welcome to</string>
+    <string name="description">The best platform ever for saving every movie you\'d like to watch!</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="log_in">Log in</string>
+    <string name="email">E-mail</string>
+    <string name="please_fill">Please, fill in the following:</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="redirecting">Redirecting</string>
+    <string name="wrong_credentials">Wrong Credentials</string>
+    <string name="wrong_email">E-mail is invalid</string>
+    <string name="enter_email">Please, enter your e-mail:</string>
+    <string name="enter_password">Please, enter your password.
+Don\'t forget to confirm it:</string>
+    <string name="taken_email">This email is already taken!</string>
+    <string name="matching_passwords">Passwords do not match</string>
+    <string name="missing_password">Enter your password</string>
+    <string name="internet_connection">Error. Check your Internet connection</string>
+    <string name="step">Step</string>
+    <string name="next">Next</string>
+    <string name="agree">To continue you have to agree to the user agreement.</string>
+
+    <string name="name_question">What\'s your name?</string>
+    <string name="name">Name</string>
+    <string name="enter_birthday">Please, tell us your birthday:</string>
+    <string name="consent">I consent to the processing of personal data described below.</string>
+    <string name="search">Search!</string>
+    <string name="search_text">movie, actor, etc</string>
+    <string name="hi">Hi</string>
+    <string name="profile_description">That\'s your profile. Want to change something?</string>
+    <string name="change_password">Change my password</string>
+    <string name="change_email">Change my email</string>
+    <string name="change_birthday">Can\'t change birthday</string>
+    <string name="change_name">Change my name</string>
+    <string name="change_profile">Change my profile</string>
+    <string name="pick_kitty">Pick this kitty!</string>
+    <string name="pick_any">Pick any!</string>
+    <string name="gotcha">Gotcha!</string>
+    <string name="production_year">Production year: </string>
+    <string name="age_rating">Age Rating: </string>
+    <string name="rating">Rating: </string>
+    <string name="votes">votes</string>
+    <string name="actors">Actors</string>
+
+    <string name="current_name">Your current name</string>
+    <string name="change_description">Here you can change your profile.</string>
+    <string name="new_name">New name</string>
+    <string name="success">Actors</string>
+    <string name="current_email">Your current email</string>
+    <string name="new_email">New e-mail</string>
+    <string name="do_not_watch">Don\'t worry, we don\'t watch</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="matching_passwords_old">Old password did not match.</string>
+    <string name="celebration">You can\'t change your birthday. We will celebrate it with you!</string>
+    <string name="almost_forgot">Almost forgot to tell you. You can also change your cat profile icon by clicking on it! Enjoy!</string>
+    <string name="speech">All the movies you add to bookmarks will appear on this page.
+
+        It\'s empty for now.</string>
+    <string name="bookmarks">Bookmarks!</string>
+
+
+    <string name="birthday">Birthday</string>
+    <string name="born_in">Born in: </string>
+    <string name="death_day">Day of death: </string>
+    <string name="movies">Movies</string>
+    <string name="facts">Facts</string>
+
 </resources>

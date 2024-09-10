@@ -3,6 +3,7 @@
 
 package com.example.meowieskotlin.screens
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -81,6 +83,16 @@ const val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$"
 @Composable
 fun SignUp(navController: NavController) {
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
+
+    val wrongEmail = context.getString(R.string.wrong_email)
+    val step = context.getString(R.string.step)
+    val next = context.getString(R.string.next)
+    val takenEmail = context.getString(R.string.taken_email)
+    val agree = context.getString(R.string.agree)
+    val redirecting = context.getString(R.string.redirecting)
+    val passwordMatch = context.getString(R.string.matching_passwords)
+
     val viewModel = viewModel<SignUpViewModel>()
 
     Surface (
@@ -130,7 +142,7 @@ fun SignUp(navController: NavController) {
             if (viewModel.email.value != "" &&
                 !viewModel.email.value.matches(emailRegex.toRegex())
             ) {
-                message.value = "Doesn't look like an e-mail"
+                message.value = wrongEmail
                 isEmailValid.value = false
             } else {
                 message.value = ""
@@ -201,7 +213,7 @@ fun SignUp(navController: NavController) {
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Step ${index + 1}",
+                                        text = "$step ${index + 1}",
                                         modifier = Modifier
                                             .padding(vertical = 8.dp),
                                         style = TextStyle(
@@ -221,25 +233,25 @@ fun SignUp(navController: NavController) {
                     modifier = Modifier.weight(9f),
                 ) { currentPage ->
                     when (currentPage) {
-                        0 -> ScreenOne(message, viewModel, configuration)
-                        1 -> ScreenTwo(viewModel, configuration)
-                        2 -> ScreenThree(selectedDate, datePickerState, showDatePicker, viewModel, configuration)
+                        0 -> ScreenOne(message, viewModel, configuration, context)
+                        1 -> ScreenTwo(viewModel, configuration, context)
+                        2 -> ScreenThree(selectedDate, datePickerState, showDatePicker,
+                            viewModel, configuration, context)
                     }
                 }
                 val text = remember {
-                    mutableStateOf("Next")
+                    mutableStateOf(next)
                 }
                 button(onClick = {
                     if (selectedTab.value < 2) {
                         selectedTab.value++
                     } else {
                         if (!isEmailValid.value) {
-                            errorMessage.value = "E-mail is invalid"
+                            errorMessage.value = wrongEmail
                         } else if (!isPasswordValid.value) {
-                            errorMessage.value = "Passwords do not match"
+                            errorMessage.value = passwordMatch
                         } else if (!viewModel.checked.value) {
-                            errorMessage.value = "To continue you have to agree " +
-                                    "to the user agreement"
+                            errorMessage.value = agree
                         } else {
                             try {
                                 val success = registerAsync(
@@ -248,10 +260,10 @@ fun SignUp(navController: NavController) {
                                 )
                                 runBlocking {
                                     if (success.await()) {
-                                        text.value = "Redirecting"
+                                        text.value = redirecting
                                         navController.navigate(Routes.SignIn.route)
                                     } else {
-                                        errorMessage.value = "This email is already taken!"
+                                        errorMessage.value = takenEmail
                                     }
                                 }
                             } catch (e: Exception) {
@@ -277,9 +289,13 @@ fun SignUp(navController: NavController) {
 }
 
 @Composable
-fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configuration: Configuration) {
+fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configuration: Configuration, context: Context) {
 
     val focusManager = LocalFocusManager.current
+    val nameQuestion = context.getString(R.string.name_question)
+    val name = context.getString(R.string.name)
+    val email = context.getString(R.string.email)
+    val enterEmail = context.getString(R.string.enter_email)
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -289,7 +305,7 @@ fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configu
         when(configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 Text(
-                    text = "What's your name?",
+                    text = nameQuestion,
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(
                         fontLight,
@@ -304,7 +320,7 @@ fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configu
 
         textFieldOneIcon(
             value = viewModel.name,
-            hint = "Name",
+            hint = name,
             focusManager = focusManager,
             image = R.drawable.id,
             KeyboardType.Text
@@ -314,7 +330,7 @@ fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configu
             Configuration.ORIENTATION_PORTRAIT -> {
                 Spacer(modifier = Modifier.padding(20.dp))
                 Text(
-                    text = "Please, enter your e-mail:",
+                    text = enterEmail,
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(
                         fontLight,
@@ -328,7 +344,7 @@ fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configu
         }
         textFieldOneIcon(
             value = viewModel.email,
-            hint = "E-mail",
+            hint = email,
             focusManager = focusManager,
             image = R.drawable.email,
             KeyboardType.Email
@@ -338,9 +354,14 @@ fun ScreenOne(message: MutableState<String>, viewModel: SignUpViewModel, configu
 }
 
 @Composable
-fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
+fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration, context: Context) {
 
     val focusManager = LocalFocusManager.current
+
+    val enterPassword = context.getString(R.string.enter_password)
+    val password = context.getString(R.string.password)
+    val confirmPassword = context.getString(R.string.confirm_password)
+    val passwordMatch = context.getString(R.string.matching_passwords)
 
     val message = remember {
         mutableStateOf("")
@@ -358,7 +379,7 @@ fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
         if (viewModel.password.value != viewModel.passwordRepeated.value &&
             viewModel.passwordRepeated.value != "" &&
             viewModel.password.value != "") {
-            message.value = "Passwords do not match"
+            message.value = passwordMatch
         } else {
             message.value = ""
         }
@@ -368,7 +389,7 @@ fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
         if (viewModel.password.value != viewModel.passwordRepeated.value &&
             viewModel.passwordRepeated.value != "" &&
             viewModel.password.value != "") {
-            message.value = "Passwords do not match"
+            message.value = passwordMatch
         } else {
             message.value = ""
         }
@@ -383,7 +404,7 @@ fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
         when(configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 textField(
-                    text = "Please, enter your password.\nDon't forget to confirm it:",
+                    text = enterPassword,
                     size = 23,
                     color = fontLight)
                 Spacer(modifier = Modifier.padding(15.dp))
@@ -396,14 +417,14 @@ fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
         passwordField(
             value = viewModel.password,
             isVisible = passwordVisible,
-            text = "Password",
+            text = password,
             focusManager = focusManager
         )
         Spacer(modifier = Modifier.padding(10.dp))
         passwordField(
             value = viewModel.passwordRepeated,
             isVisible = passwordRepeatedVisible,
-            text = "Confirm password",
+            text = confirmPassword,
             focusManager = focusManager
         )
         errorMessage(message = message)
@@ -415,9 +436,17 @@ fun ScreenTwo(viewModel: SignUpViewModel, configuration: Configuration) {
 fun ScreenThree(selectedDate: String,
                 datePickerState: DatePickerState,
                 showDatePicker: MutableState<Boolean>,
-                viewModel: SignUpViewModel, configuration: Configuration) {
+                viewModel: SignUpViewModel,
+                configuration: Configuration,
+                context: Context
+) {
 
     val focusManager = LocalFocusManager.current
+
+    val enterBirthday = context.getString(R.string.enter_birthday)
+    val agree = context.getString(R.string.agree)
+    val consent = context.getString(R.string.consent)
+
     val screenWidthDp = configuration.screenWidthDp
 
     Column (
@@ -427,7 +456,7 @@ fun ScreenThree(selectedDate: String,
     ) {
         when(configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
-                textField(text = "Please, tell us your birthday:", size = 23, color = fontLight)
+                textField(text = enterBirthday, size = 23, color = fontLight)
                 Spacer(modifier = Modifier.padding(5.dp))
             }
             Configuration.ORIENTATION_LANDSCAPE -> {
@@ -436,7 +465,8 @@ fun ScreenThree(selectedDate: String,
             Configuration.ORIENTATION_SQUARE -> { }
             Configuration.ORIENTATION_UNDEFINED -> { }
         }
-        dateField(selectedDate = selectedDate, showDatePicker = showDatePicker, focusManager)
+        val dateText = context.getString(R.string.birthday)
+        dateField(selectedDate = selectedDate, showDatePicker = showDatePicker, focusManager, dateText)
 
         if (showDatePicker.value) {
             Popup(
@@ -472,7 +502,7 @@ fun ScreenThree(selectedDate: String,
         when(configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> {
                 textField(
-                    text = "To continue you have to agree to the user agreement.",
+                    text = agree,
                     size = 23,
                     color = fontLight)
             }
@@ -486,7 +516,7 @@ fun ScreenThree(selectedDate: String,
         ) {
             styledCheckBox(checked = viewModel.checked)
             textField(
-                text = "I consent to the processing of personal data described below.",
+                text = consent,
                 size = 18,
                 color = fontDark)
         }

@@ -54,6 +54,15 @@ fun Profile(navController: NavController) {
     val configuration = LocalConfiguration.current
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
 
+    val hi = context.getString(R.string.hi)
+    val profileDescription = context.getString(R.string.profile_description)
+    val changePassword = context.getString(R.string.change_password)
+    val changeName = context.getString(R.string.change_name)
+    val changeEmail = context.getString(R.string.change_email)
+    val changeBirthday = context.getString(R.string.change_birthday)
+    val changeProfile = context.getString(R.string.change_profile)
+
+
     val name = sharedPref.getString("user_name", "").toString()
     val picture = sharedPref.getInt("user_picture", 1)
 
@@ -104,7 +113,8 @@ fun Profile(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
                 ),
-                modifier = Modifier.offset(x = 20.dp, y = 25.dp)
+                modifier = Modifier.offset(x = 20.dp, y = 25.dp),
+                shape = RectangleShape
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.sign_out),
@@ -141,35 +151,35 @@ fun Profile(navController: NavController) {
 
             when(configuration.orientation) {
                 Configuration.ORIENTATION_PORTRAIT -> {
-                    textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
+                    textFieldAligned(text = "$hi, ${name}!", size = 40, color = fontDark)
                     Spacer(modifier = Modifier.padding(15.dp))
-                    textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
+                    textFieldAligned(text = profileDescription, size = 25, color = fontLight)
                     Spacer(modifier = Modifier.padding(15.dp))
                     button(onClick = {
                         navController.navigate(Routes.Change.route)
-                    }, text = "Change password", background = Color.Transparent)
+                    }, text = changeName, background = Color.Transparent)
                     Spacer(modifier = Modifier.padding(10.dp))
                     button(onClick = {
                         navController.navigate(Routes.Change.route)
-                    }, text = "Change name", background = Color.Transparent)
+                    }, text = changeEmail, background = Color.Transparent)
                     Spacer(modifier = Modifier.padding(10.dp))
                     button(onClick = {
                         navController.navigate(Routes.Change.route)
-                    }, text = "Change email", background = Color.Transparent)
+                    }, text = changePassword, background = Color.Transparent)
                     Spacer(modifier = Modifier.padding(10.dp))
-                    button(onClick = { }, text = "Can't change birthday", background = Color.Transparent)
+                    button(onClick = { }, text = changeBirthday, background = Color.Transparent)
                     Spacer(modifier = Modifier.padding(15.dp))
                     Image(painter = painterResource(id = R.drawable.pet), contentDescription = "Kitty",
                         modifier = Modifier.height(100.dp))
                 }
                 Configuration.ORIENTATION_LANDSCAPE -> {
-                    textFieldAligned(text = "Hi, ${name}!", size = 40, color = fontDark)
+                    textFieldAligned(text = "$hi, ${name}!", size = 40, color = fontDark)
                     Spacer(modifier = Modifier.padding(15.dp))
-                    textFieldAligned(text = "That's your profile. Want to change something?", size = 25, color = fontLight)
+                    textFieldAligned(text = profileDescription, size = 25, color = fontLight)
                     Spacer(modifier = Modifier.padding(15.dp))
                     button(onClick = {
                         navController.navigate(Routes.Change.route)
-                    }, text = "Change my profile", background = Color.Transparent)
+                    }, text = changeProfile, background = Color.Transparent)
                 }
                 Configuration.ORIENTATION_SQUARE -> { }
                 Configuration.ORIENTATION_UNDEFINED -> { }

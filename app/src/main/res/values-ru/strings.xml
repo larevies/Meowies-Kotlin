@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meowies</string>
+    <string name="greeting">Рады видеть Вас снова!</string>
+    <string name="welcome">Добро пожаловать в</string>
+    <string name="description">Лучшая платформа для сохранения любимых фильмов!</string>
+    <string name="sign_in">Вход</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="log_in">Зайти в аккаунт</string>
+    <string name="email">Электронная почта</string>
+    <string name="please_fill">Пожалуйста, заполните:</string>
+    <string name="password">Пароль</string>
+    <string name="redirecting">Переходим…</string>
+    <string name="wrong_credentials">Неверные данные</string>
+    <string name="wrong_email">Почта неверна</string>
+    <string name="missing_password">Введите пароль</string>
+    <string name="internet_connection">Пожалуйста, проверьте интернет-соединение</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="enter_email">Пожалуйста, введите свою почту:</string>
+    <string name="enter_password">Пожалуйста, введите пароль и подтвердите его:</string>
+    <string name="taken_email">Аккаунт с такой почтой уже существует!</string>
+    <string name="matching_passwords">Пароли не совпадают</string>
+    <string name="step">Шаг</string>
+    <string name="next">Далее</string>
+    <string name="agree">Чтобы продолжить, необходимо согласиться с пользовательским соглашением ниже:</string>
+    <string name="name_question">Как Вас зовут?</string>
+    <string name="name">Имя</string>
+    <string name="enter_birthday">Пожалуйста, назовите свою дату рождения:</string>
+    <string name="consent">Я соглашаюсь на обработку персональных данных</string>
+    <string name="search">Поиск!</string>
+    <string name="search_text">фильм, актер, другое</string>
+    <string name="hi">Привет</string>
+    <string name="profile_description">Это Ваш профиль. Хотите что-нибудь изменить?</string>
+    <string name="change_password">Изменить мой пароль</string>
+    <string name="change_email">Изменить мою почту</string>
+    <string name="change_birthday">Нельзя изменить день рождения</string>
+    <string name="change_name">Изменить мое имя</string>
+    <string name="change_profile">Изменить мой профиль</string>
+    <string name="pick_kitty">Выбрать этого котика!</string>
+    <string name="pick_any">Иконки!</string>
+    <string name="gotcha">Готово!</string>
+    <string name="production_year">Год производства: </string>
+    <string name="age_rating">Возрастной рейтинг: </string>
+    <string name="rating">Рейтинг: </string>
+    <string name="votes">голосов</string>
+    <string name="actors">Актеры</string>
+    <string name="current_name">Ваше текущее имя</string>
+    <string name="change_description">Здесь Вы можете изменить свой профиль.</string>
+    <string name="new_name">Новое имя</string>
+    <string name="success">Актеры</string>
+    <string name="current_email">Ваша текущая почта</string>
+    <string name="new_email">Новая почта</string>
+    <string name="do_not_watch">Не волнуйтесь, мы не подглядываем</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="confirm_new_password">Подтвердить новый пароль</string>
+    <string name="matching_passwords_old">Старый пароль не подходит.</string>
+    <string name="celebration">Нельзя изменить свой день рождения. Мы будем праздновать его вместе с Вами!</string>
+    <string name="almost_forgot">Чуть не забыли сказать. Вы также можете изменить иконку своего профиля, кликнув на неё!</string>
+    <string name="speech">Все фильмы, которые Вы добавите в закладки, будут отображены на этой странице.
+
+        Пока она пустая.</string>
+    <string name="bookmarks">Закладки!</string>
+    <string name="birthday">День рождения</string>
+    <string name="born_in">Место рождения: </string>
+    <string name="death_day">День смерти: </string>
+    <string name="movies">Фильмы</string>
+    <string name="facts">Факты</string>
+</resources>
+
