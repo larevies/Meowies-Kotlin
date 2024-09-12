@@ -8,9 +8,13 @@ android {
     namespace = "com.example.meowieskotlin"
     compileSdk = 34
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.meowieskotlin"
-        minSdk = 24
+        minSdk = 33
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

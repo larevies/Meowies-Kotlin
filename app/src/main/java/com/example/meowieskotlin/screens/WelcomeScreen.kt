@@ -2,8 +2,10 @@
 
 package com.example.meowieskotlin.screens
 
+import android.app.LocaleManager
 import android.content.Context
 import android.content.res.Configuration
+import android.os.LocaleList
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +50,13 @@ import com.example.meowieskotlin.ui.theme.backgroundLight
 import com.example.meowieskotlin.ui.theme.fontDark
 import com.example.meowieskotlin.ui.theme.fontLight
 import com.example.meowieskotlin.ui.theme.fontMedium
-import java.util.Locale
+
 
 @Composable
 fun Welcome(navController: NavController) {
+
+    val ruAppLocale = LocaleList.forLanguageTags("ru")
+    val enAppLocale = LocaleList.forLanguageTags("en-US")
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -88,7 +93,7 @@ fun Welcome(navController: NavController) {
                     )
             ) {
                 val isExpanded = remember {
-                    mutableStateOf(false)
+                    mutableStateOf(true)
                 }
                 Box(
                     modifier = Modifier.fillMaxWidth(),
@@ -112,7 +117,9 @@ fun Welcome(navController: NavController) {
                     DropdownMenu(
                         expanded = isExpanded.value,
                         onDismissRequest = { isExpanded.value = !isExpanded.value},
-                        modifier = Modifier.background(fontLight).padding(15.dp)
+                        modifier = Modifier
+                            .background(fontLight)
+                            .padding(15.dp)
                     ) {
                         Button(
                             contentPadding = PaddingValues(),
@@ -121,7 +128,9 @@ fun Welcome(navController: NavController) {
                                 containerColor = Color.Transparent
                             ),
                             onClick = {
-                                configuration.setLocale(Locale("en"))
+                                context.getSystemService(
+                                    LocaleManager::class.java
+                                ).applicationLocales = enAppLocale
                             }) {
                             Image(painter = painterResource(id = R.drawable.english),
                                 contentDescription = "English language")
@@ -136,7 +145,9 @@ fun Welcome(navController: NavController) {
                                 containerColor = Color.Transparent
                             ),
                             onClick = {
-                                configuration.setLocale(Locale("ru"))
+                                context.getSystemService(
+                                    LocaleManager::class.java
+                                ).applicationLocales = ruAppLocale
                             }) {
                             Image(painter = painterResource(id = R.drawable.russian),
                                 contentDescription = "Russian language")
