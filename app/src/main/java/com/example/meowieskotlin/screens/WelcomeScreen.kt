@@ -70,10 +70,13 @@ fun Welcome(navController: NavController) {
     val sharedPref = context.getSharedPreferences("MeowiesPref", Context.MODE_PRIVATE)
     val isSigned = sharedPref.getString("user_email", "")
 
+    val isExpanded = remember {
+        mutableStateOf(false)
+    }
+
     if (isSigned != "") {
         navController.navigate(Routes.Search.route)
     } else {
-
         Surface(
             color = backgroundColor,
             modifier = Modifier
@@ -92,9 +95,6 @@ fun Welcome(navController: NavController) {
                             ),
                     )
             ) {
-                val isExpanded = remember {
-                    mutableStateOf(true)
-                }
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopStart
